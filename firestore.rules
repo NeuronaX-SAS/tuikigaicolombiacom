@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir escribir en las colecciones específicas que necesitamos
+    match /ikigai_responses/{document} {
+      allow read, write: if true;
+    }
+    
+    match /promo_codes/{document} {
+      allow read, write: if true;
+    }
+    
+    match /purchases/{document} {
+      allow read, write: if true;
+    }
+    
+    // Bloquear acceso a todo lo demás
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 

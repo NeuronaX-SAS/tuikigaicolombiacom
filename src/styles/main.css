@@ -1,0 +1,680 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #E94560;
+  --color-secondary: #533483;
+  --color-dark: #1A1A2E;
+  --color-darkblue: #0F3460;
+  --color-lightblue: #16213E;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply antialiased text-gray-800;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full font-medium transition-all 
+           duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] 
+           text-white py-3 px-6 rounded-full font-medium transition-all duration-300 
+           transform hover:scale-105 hover:shadow-lg active:scale-95
+           flex items-center justify-center;
+  }
+  
+  .btn-secondary {
+    @apply bg-white bg-opacity-10 text-gray-100 py-3 px-6 rounded-full 
+           font-medium transition-all duration-300 border border-white border-opacity-20
+           hover:bg-opacity-20 active:scale-95;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 
+           focus:ring-[#4ECDC4] focus:border-transparent transition-all duration-200;
+  }
+}
+
+/* Animaciones para elementos de la interfaz */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fadein {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slideup {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce 1.5s infinite;
+}
+
+/* Estilos específicos para el diagrama Ikigai */
+.ikigai-keyword {
+  opacity: 0;
+  transition: all 0.5s ease-out;
+}
+
+.ikigai-keyword-enter {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.ikigai-keyword-enter-active {
+  opacity: 1;
+}
+
+/* Colores para las secciones del Ikigai */
+.ikigai-love-bg {
+  @apply bg-[var(--color-primary)] bg-opacity-10 border-[var(--color-primary)] border;
+}
+
+.ikigai-talent-bg {
+  @apply bg-[var(--color-secondary)] bg-opacity-10 border-[var(--color-secondary)] border;
+}
+
+.ikigai-need-bg {
+  @apply bg-[var(--color-darkblue)] bg-opacity-10 border-[var(--color-darkblue)] border;
+}
+
+.ikigai-payment-bg {
+  @apply bg-green-50 border-green-600 border;
+}
+
+.ikigai-love {
+  @apply text-[var(--color-primary)];
+}
+
+.ikigai-talent {
+  @apply text-[var(--color-secondary)];
+}
+
+.ikigai-need {
+  @apply text-[var(--color-darkblue)];
+}
+
+.ikigai-payment {
+  @apply text-green-600;
+}
+
+/* Estilos para parallax */
+.parallax-effect {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Transiciones y efectos */
+.transition-standard {
+  transition: all 0.3s ease-in-out;
+}
+
+.hover-lift {
+  transition: transform 0.3s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+/* Estilos para modales y overlays */
+.modal-overlay {
+  backdrop-filter: blur(3px);
+}
+
+/* Estilos responsive para dispositivos móviles */
+@media (max-width: 768px) {
+  .btn {
+    @apply px-4 py-2 text-sm;
+  }
+
+  /* Improve form inputs on mobile */
+  input, select, textarea {
+    @apply text-base; /* Slightly larger text on mobile for better readability */
+  }
+
+  /* Additional spacing for stacked form elements */
+  .form-stack > * + * {
+    @apply mt-3;
+  }
+  
+  /* Better spacing for modal content on mobile */
+  .modal-content-mobile {
+    @apply p-4 space-y-4;
+  }
+  
+  /* Adjust vertical centering for modals on very small heights */
+  @media (max-height: 650px) {
+    .modal-container {
+      @apply items-start pt-2 pb-2;
+      overflow-y: auto;
+    }
+  }
+}
+
+/* Animaciones premium */
+@keyframes pulse-slow {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.1;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 15s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 1.5s ease-out forwards;
+}
+
+/* Tarjetas premium */
+.card-premium {
+  @apply bg-white rounded-xl shadow-xl overflow-hidden transition-all duration-500
+         hover:shadow-2xl transform hover:-translate-y-1;
+}
+
+.ikigai-card {
+  @apply rounded-xl overflow-hidden transition-all duration-300 shadow-lg;
+}
+
+.card-premium-dark {
+  @apply bg-[var(--color-dark)] bg-opacity-50 text-white rounded-xl shadow-lg 
+         backdrop-blur-md border border-white border-opacity-10
+         transition-all duration-300 hover:bg-opacity-70;
+}
+
+/* Efecto vidrio esmerilado */
+.glass-effect {
+  @apply bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg 
+         border border-white border-opacity-20 rounded-xl;
+}
+
+/* Elementos de navegación */
+.nav-link {
+  @apply relative px-3 py-2 text-gray-200 transition-all duration-300 hover:text-white;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--color-primary)]
+         transition-all duration-300;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+
+/* Efectos específicos para la sección de compra */
+.purchase-option {
+  @apply transition-all duration-300 transform hover:scale-105 hover:shadow-xl
+         cursor-pointer border rounded-xl p-5 bg-white;
+}
+
+.purchase-option.selected {
+  @apply ring-2 ring-[var(--color-primary)] ring-offset-2 shadow-lg;
+}
+
+/* Animación de entrada para elementos */
+.animate-fadein {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación para confetti */
+.confetti-animation {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Estilos para los mensajes de entrada */
+.typing-animation {
+  display: inline-block;
+}
+
+.typing-animation::after {
+  content: '|';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Efecto de brillo */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shine 5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  20%, 100% {
+    left: 150%;
+  }
+}
+
+/* Animaciones premium para efectos de vidrio y movimientos fluidos */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulse-subtle {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+  }
+  70% {
+    box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-shimmer {
+  animation: shimmer 3s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200% 100%;
+}
+
+/* Efectos de glassmorphism modernos */
+.glassmorphism {
+  @apply bg-white bg-opacity-5 backdrop-filter backdrop-blur-md 
+         border border-white border-opacity-10 shadow-xl;
+}
+
+.glassmorphism-dark {
+  @apply bg-black bg-opacity-30 backdrop-filter backdrop-blur-md 
+         border border-white border-opacity-5 shadow-xl;
+}
+
+.glassmorphism-card {
+  @apply rounded-xl overflow-hidden transition-all duration-300
+         bg-white bg-opacity-5 backdrop-filter backdrop-blur-md
+         border border-white border-opacity-10;
+}
+
+/* Sombras premium */
+.shadow-blue {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.shadow-purple {
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+.shadow-teal {
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.3);
+}
+
+/* Utilidades adicionales para efectos de gradiente */
+.bg-gradient-radial {
+  background: radial-gradient(circle at center, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+}
+
+.bg-gradient-conic {
+  background: conic-gradient(from 0deg at 50% 50%, var(--tw-gradient-from), var(--tw-gradient-to));
+}
+
+/* Transiciones personalizadas */
+.transition-cubic {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-bounce {
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animaciones específicas para compra y pago */
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-fade {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes slide-up-fade {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out forwards;
+}
+
+.animate-zoom-fade {
+  animation: zoom-fade 0.5s ease-out forwards;
+}
+
+.animate-sparkle {
+  animation: sparkle 1.5s infinite;
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.4s ease-out forwards;
+}
+
+/* Efectos para tarjetas de pago */
+.payment-card {
+  @apply bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10 
+         transition-all duration-300 hover:border-white/30 hover:shadow-lg;
+}
+
+.payment-card-selected {
+  @apply bg-white/10 border-blue-500/70 shadow-blue-glow;
+}
+
+/* Efectos modernos de glass */
+.glass-premium {
+  @apply bg-white/5 backdrop-blur-lg border border-white/10 
+         shadow-xl rounded-xl transition-all duration-300;
+}
+
+.glass-premium:hover {
+  @apply border-white/20 shadow-blue-glow;
+}
+
+.glass-card {
+  @apply bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-md 
+         border border-white/10 rounded-xl shadow-lg 
+         transition-all duration-300 overflow-hidden;
+}
+
+/* Efectos de estrella y brillo */
+.star {
+  @apply absolute w-1 h-1 rounded-full bg-white;
+  animation: sparkle 1.5s infinite;
+}
+
+.star:nth-child(1) {
+  top: 10%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.star:nth-child(2) {
+  top: 20%;
+  left: 80%;
+  animation-delay: 0.3s;
+}
+
+.star:nth-child(3) {
+  top: 60%;
+  left: 10%;
+  animation-delay: 0.6s;
+}
+
+.star:nth-child(4) {
+  top: 80%;
+  left: 70%;
+  animation-delay: 0.9s;
+}
+
+.star:nth-child(5) {
+  top: 40%;
+  left: 50%;
+  animation-delay: 1.2s;
+}
+
+/* Retrasos para animaciones en cadena */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-400 {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+/* Botones premium */
+.btn-premium {
+  @apply relative overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-teal-400
+         text-white font-medium py-3 px-6 rounded-xl shadow-lg
+         transition-all duration-300 hover:shadow-blue-glow
+         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black;
+}
+
+.btn-premium::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0
+         transition-all duration-500 transform translate-x-[-100%];
+}
+
+.btn-premium:hover::before {
+  @apply opacity-20 translate-x-[100%];
+}
+
+/* Efectos para los fondos */
+.grid-background {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+.sparkle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background-color: white;
+  opacity: 0;
+  animation: sparkle 1.5s infinite;
+  box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
+}

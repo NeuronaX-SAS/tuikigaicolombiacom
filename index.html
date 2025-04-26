@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TUIKIGAI - Descubre tu propósito de vida y maximiza tu potencial a través de la metodología Ikigai. Servicio premium personalizado.">
+  <meta name="keywords" content="Ikigai, propósito de vida, desarrollo personal, coaching, bienestar, éxito profesional">
+  <meta name="author" content="NeuronaX S.A.S.">
+  <meta property="og:title" content="TUIKIGAI - Tu camino hacia el propósito">
+  <meta property="og:description" content="Descubre tu propósito de vida con nuestra metodología Ikigai exclusiva. Encuentra el equilibrio entre pasión, talento, valor y remuneración.">
+  <meta property="og:image" content="images/tuikigai-social.jpg">
+  <meta property="og:url" content="https://tuikigai.com">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <title>TUIKIGAI - Descubre tu propósito con metodología premium</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="manifest" href="site.webmanifest">
+  
+  <!-- Fuentes premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Estilos principales -->
+  <link rel="stylesheet" href="src/styles/main.css">
+  
+  <!-- Cloudflare Turnstile para seguridad -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  
+  <!-- Precargar recursos críticos -->
+  <link rel="preload" href="src/assets/images/patterns/dot-pattern.svg" as="image">
+</head>
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen">
+  <!-- Overlay de carga elegante -->
+  <div id="loading-overlay" class="fixed inset-0 bg-dark z-50 flex items-center justify-center transition-opacity duration-500">
+    <div class="text-center">
+      <div class="inline-block w-16 h-16 relative mb-4">
+        <div class="absolute inset-0 rounded-full border-4 border-primary border-opacity-20 animate-spin-slow"></div>
+        <div class="absolute inset-3 rounded-full bg-primary"></div>
+      </div>
+      <h2 class="text-white text-xl font-heading">TUIKIGAI</h2>
+      <p class="text-gray-400 text-sm mt-2">Descubriendo tu propósito...</p>
+    </div>
+  </div>
+
+  <div id="app"></div>
+  <script type="module" src="src/main.jsx"></script>
+  
+  <!-- Script para ocultar la pantalla de carga -->
+  <script>
+    window.addEventListener('load', function() {
+      const loadingOverlay = document.getElementById('loading-overlay');
+      if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 500);
+      }
+    });
+  </script>
+</body>
+</html>
