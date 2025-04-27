@@ -8,7 +8,7 @@
     "patch:worker": "node scripts/fix-worker.js",
     "copy:assets": "node scripts/copy-assets.js",
     "build.cloudflare": "npm run build && npm run build.server && npm run patch:worker && npm run copy:assets",
-    "deploy": "wrangler pages deploy ./dist",
+    "deploy": "wrangler pages deploy ./dist --project-name tuikigaicolombiacom",
     "dev": "vite --force",
     "preview": "vite preview",
     "serve": "wrangler pages dev ./dist --compatibility-flags=nodejs_als",
