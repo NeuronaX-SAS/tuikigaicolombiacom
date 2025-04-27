@@ -1,6 +1,6 @@
 import { cloudflarePagesAdapter } from "@builder.io/qwik-city/adapters/cloudflare-pages/vite";
 import { extendConfig } from "@builder.io/qwik-city/vite";
-import baseConfig from "../../vite.config.mjs"; // Add .mjs extension
+import baseConfig from "../../vite.config.mjs";
 
 export default extendConfig(baseConfig, () => {
   return {
@@ -9,7 +9,11 @@ export default extendConfig(baseConfig, () => {
       rollupOptions: {
         input: ["src/entry.cloudflare-pages.tsx", "@qwik-city-plan"],
       },
+      outDir: "dist",
     },
-    plugins: [cloudflarePagesAdapter()],
+    plugins: [
+      cloudflarePagesAdapter({
+      })
+    ],
   };
 });

@@ -1,10 +1,12 @@
 import { component$, useSignal, useStore, $, useVisibleTask$ } from '@builder.io/qwik';
 import IkigaiDiagram from '../ui/IkigaiDiagram';
 import IkigaiCard from '../ui/IkigaiCard';
+import { getAssetPath } from '../../utils/assetPath';
 
 // Importar servicios
 import { mercadoPagoService } from '../../services/MercadoPagoService';
-import { firestoreService } from '../../services/FirestoreService'; // Importar FirestoreService
+import { firestoreService } from '../../services/FirestoreService';
+
 // import { API } from '../../services/api'; // Comentado si no se usa directamente
 
 interface UnifiedIkigaiState {
@@ -37,7 +39,7 @@ export default component$(() => {
   const hasNavigatedToNext = useStore({ love: false, talent: false, need: false, payment: false });
 
   // Estado para las imágenes de ikigai prediseñadas
-  const selectedIkigaiImage = useSignal<string | null>('/images/IKIGAI_Base_Verde.png');
+  const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Base_Verde.png'));
   const showStaticIkigai = useSignal(true);
 
   // Contadores de caracteres
@@ -521,13 +523,13 @@ export default component$(() => {
 
   // Definición de plantillas de ikigai
   const ikigaiTemplates = [
-    { id: 'gris', name: 'Gris', color: 'bg-gray-400', path: '/images/IKIGAI_Base_Gris.png' },
-    { id: 'naranja', name: 'Naranja', color: 'bg-orange-500', path: '/images/IKIGAI_Base_Naranja.png' },
-    { id: 'rojo', name: 'Rojo', color: 'bg-red-600', path: '/images/IKIGAI_Base_Roja.png' },
-    { id: 'verde', name: 'Verde', color: 'bg-green-600', path: '/images/IKIGAI_Base_Verde.png' },
-    { id: 'azul', name: 'Azul', color: 'bg-blue-600', path: '/images/IKIGAI_EJEMPLO_Azul.png' },
-    { id: 'morado', name: 'Morado', color: 'bg-purple-600', path: '/images/IKIGAI_EJEMPLO_Morado.png' },
-    { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: '/images/Amarillo ikigai_00.png' }
+    { id: 'gris', name: 'Gris', color: 'bg-gray-400', path: getAssetPath('images/IKIGAI_Base_Gris.png') },
+    { id: 'naranja', name: 'Naranja', color: 'bg-orange-500', path: getAssetPath('images/IKIGAI_Base_Naranja.png') },
+    { id: 'rojo', name: 'Rojo', color: 'bg-red-600', path: getAssetPath('images/IKIGAI_Base_Roja.png') },
+    { id: 'verde', name: 'Verde', color: 'bg-green-600', path: getAssetPath('images/IKIGAI_Base_Verde.png') },
+    { id: 'azul', name: 'Azul', color: 'bg-blue-600', path: getAssetPath('images/IKIGAI_EJEMPLO_Azul.png') },
+    { id: 'morado', name: 'Morado', color: 'bg-purple-600', path: getAssetPath('images/IKIGAI_EJEMPLO_Morado.png') },
+    { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/Amarillo ikigai_00.png') }
   ];
 
   return (
@@ -557,7 +559,7 @@ export default component$(() => {
         {/* Encabezado y barra de progreso */}
         <div class="text-center mb-12">
           <img
-            src="/TuIkigai Logo_Recorte.png"
+            src={getAssetPath('TuIkigai Logo_Recorte.png')}
             alt="TUIKIGAI Logo"
             class="w-24 h-24 object-contain mx-auto mb-6 animate-float filter drop-shadow-md"
           />
@@ -831,7 +833,7 @@ export default component$(() => {
                 <span class="flex items-center">
                   <span class={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full ${purchaseOption.value === 'gift' ? 'bg-blue-400' : 'bg-blue-100'} mr-2 sm:mr-3`}>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14a2 2 0 110 4H5a2 2 0 110-4z" />
                     </svg>
                   </span>
                   <div class="flex flex-col text-left">
@@ -1148,21 +1150,6 @@ export default component$(() => {
                               onInput$={(e: any) => purchaseData.giftMessage = e.target.value}
                             ></textarea>
                           </div>
-                        </div>
-                      )}
-
-                      {/* Campo Código Promocional (si aplica) */}
-                      {purchaseOption.value === 'code' && (
-                        <div>
-                          <label class="block text-sm font-medium text-slate-700 mb-1">Código promocional <span class="text-red-500">*</span></label>
-                          <input
-                            type="text"
-                            required
-                            class="w-full px-3 py-2 sm:px-4 sm:py-3 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400/50 focus:border-transparent transition-all duration-200"
-                            placeholder="Ingresa tu código"
-                            value={purchaseData.promoCode}
-                            onInput$={(e: any) => purchaseData.promoCode = e.target.value}
-                          />
                         </div>
                       )}
                     </div>

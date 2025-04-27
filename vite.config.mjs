@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
   
   return {
+    base: '/', // Explicitly set base URL
     plugins: [
       qwikVite({
         srcDir: "./src",
@@ -20,7 +21,7 @@ export default defineConfig(({ mode }) => {
         debug: isDev,
         vendorRoots: isDev ? [] : undefined
       }),
-      qwikCity() // Remove ssr: false
+      qwikCity()
     ],
 
     server: {
@@ -32,12 +33,6 @@ export default defineConfig(({ mode }) => {
       },
       middlewareMode: false
     },
-    
-//    optimizeDeps: {
-//      force: true,
-//      include: ['@builder.io/qwik', '@builder.io/qwik/jsx-runtime', 'd3', 'canvas-confetti'],
-//     exclude: ['@builder.io/qwik/build']
-//    },
     
     resolve: {
       alias: {
@@ -61,7 +56,10 @@ export default defineConfig(({ mode }) => {
           manualChunks: (id) => {
             if (id.includes('node_modules/d3')) return 'd3';
             if (id.includes('node_modules/canvas-confetti')) return 'confetti';
-          }
+          },
+          assetFileNames: 'assets/[name].[hash].[ext]',
+          chunkFileNames: 'assets/[name].[hash].js',
+          entryFileNames: 'assets/[name].[hash].js'
         }
       },
       reportCompressedSize: true,

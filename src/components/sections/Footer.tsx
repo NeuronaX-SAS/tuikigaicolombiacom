@@ -1,4 +1,5 @@
 import { component$ } from '@builder.io/qwik';
+import { getAssetPath } from '../../utils/assetPath';
 
 /**
  * Componente Footer - Pie de página premium con información de contacto y créditos
@@ -61,7 +62,6 @@ export default component$(() => {
             </div>
           </div>
           
-          {/* Enlaces de navegación */}
           {/* Enlaces de navegación - ELIMINAMOS LA SECCIÓN EXPLORAR */}
           
           {/* Información legal */}
@@ -69,13 +69,13 @@ export default component$(() => {
             <h3 class="text-xl font-bold mb-4 text-tuikigai-teal">Legal</h3>
             <ul class="space-y-3">
               <li>
-                <a href="/documents/Política de Tratamiento de Datos Personales.docx" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href={getAssetPath('documents/Política de Tratamiento de Datos Personales.docx')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Política de Privacidad
                 </a>
               </li>
               <li>
-                <a href="/documents/Términos y Condiciones.docx" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href={getAssetPath('documents/Términos y Condiciones.docx')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Términos y Condiciones
                 </a>
