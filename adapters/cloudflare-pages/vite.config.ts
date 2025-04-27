@@ -17,7 +17,7 @@ export default extendConfig(baseConfig, () => {
       outDir: "dist",
     },
     plugins: [
-      cloudflarePagesAdapter()
+      cloudflarePagesAdapter() // Remove staticGenerate again
     ],
   };
 });
