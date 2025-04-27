@@ -5,7 +5,8 @@
   "scripts": {
     "build": "vite build",
     "build.server": "vite build -c adapters/cloudflare-pages/vite.config.ts",
-    "build.cloudflare": "npm run build && npm run build.server",
+    "patch:worker": "sed -i 's|\\\"assets/entry.cloudflare-pages\\\"|\\\"./assets/entry.cloudflare-pages\\\"|g' dist/_worker.js",
+    "build.cloudflare": "npm run build && npm run build.server && npm run patch:worker",
     "deploy": "wrangler pages deploy ./dist",
     "dev": "vite --force",
     "preview": "vite preview",
