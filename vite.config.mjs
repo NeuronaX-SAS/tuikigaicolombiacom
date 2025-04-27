@@ -20,9 +20,9 @@ export default defineConfig(({ mode }) => {
         debug: isDev,
         vendorRoots: isDev ? [] : undefined
       }),
-      qwikCity({ ssr: false })
+      qwikCity() // Remove ssr: false
     ],
-    
+
     server: {
       port: 3000,
       open: true,
