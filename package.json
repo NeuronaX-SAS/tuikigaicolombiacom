@@ -4,9 +4,8 @@
   "description": "Aplicación de una sola página para explorar el concepto Ikigai",
   "scripts": {
     "build": "vite build",
-    "build.ssr": "VITE_SSR=true vite build",
-    "build.cloudflare": "npm run build && npm run build.ssr",
-    "deploy": "wrangler pages deploy ./dist",
+    "build.cloudflare": "npm run build",
+    "deploy": "npm run build.cloudflare && wrangler pages deploy ./dist",
     "dev": "vite --force",
     "preview": "vite preview",
     "serve": "wrangler pages dev ./dist --compatibility-flags=nodejs_als",

@@ -6,11 +6,10 @@ import { cloudflarePagesAdapter } from "@builder.io/qwik-city/adapters/cloudflar
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isDev = mode === 'development';
-  const isSSR = command === 'build' && process.env.VITE_SSR === 'true';
-  
+
   return {
     base: '/',
     plugins: [
@@ -24,8 +23,7 @@ export default defineConfig(({ mode, command }) => {
         vendorRoots: isDev ? [] : undefined
       }),
       qwikCity(),
-      // Only add the Cloudflare Pages adapter when building for production
-      !isDev && !isSSR && cloudflarePagesAdapter()
+      cloudflarePagesAdapter() // Adapter handles its own logic
     ].filter(Boolean),
 
     server: {
@@ -57,9 +55,7 @@ export default defineConfig(({ mode, command }) => {
         }
       },
       rollupOptions: {
-        input: isSSR 
-          ? ["src/entry.cloudflare-pages.tsx", "@qwik-city-plan"]
-          : undefined,
+        // Input is handled by the adapter/qwikCity plugin
         output: {
           manualChunks: (id) => {
             if (id.includes('node_modules/d3')) return 'd3';
@@ -70,7 +66,7 @@ export default defineConfig(({ mode, command }) => {
           entryFileNames: 'assets/[name].[hash].js'
         }
       },
-      ssr: isSSR,
+      // ssr handled by adapter/qwikCity plugin
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
     },
