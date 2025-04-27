@@ -33,16 +33,9 @@ export const logRequest = (path: string, request: Request) => {
 const routes: Routes = {
   // Mercado Pago
   '/api/create-preference': async (request: Request) => {
-    // Only require crypto on the server
-    let purchaseAttemptReference: string = '';
-    if (typeof window === 'undefined') {
-      // Dynamically import crypto only on the server
-      const crypto = await import('crypto');
-      purchaseAttemptReference = crypto.randomUUID();
-    } else {
-      // Fallback for environments without crypto (should not happen in prod)
-      purchaseAttemptReference = Math.random().toString(36).substring(2, 15);
-    }
+    // Use the globally available Web Crypto API (works in CF Workers & browsers)
+    const purchaseAttemptReference: string = crypto.randomUUID();
+
     try {
       logRequest('/api/create-preference', request);
       
