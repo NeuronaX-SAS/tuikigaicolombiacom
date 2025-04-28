@@ -14,7 +14,10 @@ export default defineConfig(({ mode }) => {
     plugins: [
       qwikVite(), // Simplify qwikVite options, let it use defaults
       qwikCity(),
-      cloudflarePagesAdapter() // Add adapter plugin
+      cloudflarePagesAdapter({
+        // Explicitly set the server output directory
+        serverOutDir: 'dist/server',
+      })
     ],
 
     server: {
