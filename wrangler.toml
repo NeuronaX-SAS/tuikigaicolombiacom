@@ -1,5 +1,6 @@
 # Cloudflare Pages configuration
 name = "tuikigaicolombiacom" # Should match your Cloudflare Pages project name
+pages_build_output_dir = "dist" # Specify the output directory for Pages
 compatibility_date = "2024-04-27" # Use a recent date
 
 # Enable Node.js compatibility flags
