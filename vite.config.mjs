@@ -14,11 +14,12 @@ export default defineConfig(({ mode }) => {
     plugins: [
       qwikVite(), // Simplify qwikVite options, let it use defaults
       qwikCity(),
-      cloudflarePagesAdapter({
-        // Explicitly set the server output directory
-        serverOutDir: 'dist/server',
+      // Add the adapter only during production builds
+      !isDev && cloudflarePagesAdapter({
+        // Explicitly set the server output directory relative to dist
+        serverOutDir: './server' 
       })
-    ],
+    ].filter(Boolean), // Filter out falsy values like the adapter in dev mode
 
     server: {
       port: 3000,
@@ -39,7 +40,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2020',
       outDir: 'dist',
-      // assetsDir: 'assets', // Remove this - let adapter control asset paths
+      // assetsDir: 'assets', // Let adapter control asset paths
       cssCodeSplit: true,
       minify: 'terser',
       terserOptions: {
@@ -47,10 +48,6 @@ export default defineConfig(({ mode }) => {
           drop_console: mode === 'production',
           drop_debugger: mode === 'production',
         }
-      },
-      rollupOptions: {
-        // Explicitly define SSR inputs as suggested by the error message
-        input: ["src/entry.ssr.tsx", "@qwik-city-plan"],
       },
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
