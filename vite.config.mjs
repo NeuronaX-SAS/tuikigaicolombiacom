@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2020',
       outDir: 'dist',
-      assetsDir: 'assets',
+      // assetsDir: 'assets', // Remove this - let adapter control asset paths
       cssCodeSplit: true,
       minify: 'terser',
       terserOptions: {
