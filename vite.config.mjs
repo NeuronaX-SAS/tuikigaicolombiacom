@@ -45,16 +45,7 @@ export default defineConfig(({ mode }) => {
           drop_debugger: mode === 'production',
         }
       },
-      rollupOptions: {
-        // Input is handled by qwikCity/adapter
-        output: {
-          // Remove manualChunks - incompatible with adapter's inlineDynamicImports for SSR
-          assetFileNames: 'assets/[name].[hash].[ext]',
-          chunkFileNames: 'assets/[name].[hash].js',
-          entryFileNames: 'assets/[name].[hash].js'
-        }
-      },
-      // ssr is handled by qwikCity/adapter
+      // rollupOptions (input and output) are handled by qwikCity/adapter
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
     },
