@@ -1,0 +1,7 @@
+# Cloudflare Pages configuration
+name = "tuikigaicolombiacom" # Should match your Cloudflare Pages project name
+compatibility_date = "2024-04-27" # Use a recent date
+
+# Enable Node.js compatibility flags
+[compatibility_flags]
+nodejs_compat = true
