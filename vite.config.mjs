@@ -45,7 +45,10 @@ export default defineConfig(({ mode }) => {
           drop_debugger: mode === 'production',
         }
       },
-      // rollupOptions (input and output) are handled by qwikCity/adapter
+      rollupOptions: {
+        // Explicitly define SSR inputs as suggested by the error message
+        input: ["src/entry.ssr.tsx", "@qwik-city-plan"],
+      },
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
     },
