@@ -82,10 +82,10 @@ export default component$(() => {
               </li>
             </ul>
             <p class="mt-6 text-sm text-gray-400">
-              En TUIKIGAI cumplimos con los más altos estándares de protección de datos personales.
-              Para ejercer sus derechos de habeas data, consulte la 
+            En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. 
+            Para ejercer sus derechos puede consulta en la 
               <a href="https://www.sic.gov.co/tema/proteccion-de-datos-personales" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">
-                Superintendencia de Industria y Comercio
+                 Superintendencia de Industria y Comercio
               </a>.
             </p>
           </div>
