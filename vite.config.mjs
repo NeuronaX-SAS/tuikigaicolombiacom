@@ -48,10 +48,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         // Input is handled by qwikCity/adapter
         output: {
-          manualChunks: (id) => {
-            if (id.includes('node_modules/d3')) return 'd3';
-            if (id.includes('node_modules/canvas-confetti')) return 'confetti';
-          },
+          // Remove manualChunks - incompatible with adapter's inlineDynamicImports for SSR
           assetFileNames: 'assets/[name].[hash].[ext]',
           chunkFileNames: 'assets/[name].[hash].js',
           entryFileNames: 'assets/[name].[hash].js'
