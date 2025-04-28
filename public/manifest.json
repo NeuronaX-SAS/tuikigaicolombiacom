@@ -1,0 +1,21 @@
+{
+  "name": "TUIKIGAI",
+  "short_name": "TUIKIGAI",
+  "description": "Descubre tu propósito de vida con TUIKIGAI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5ed",
+  "theme_color": "#10bec5",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
