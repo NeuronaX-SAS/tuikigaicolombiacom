@@ -2,6 +2,7 @@ import './src/utils/jsonPatch.js';
 import { defineConfig, loadEnv } from 'vite';
 import { qwikVite } from '@builder.io/qwik/optimizer';
 import { qwikCity } from '@builder.io/qwik-city/vite';
+import { cloudflarePagesAdapter } from "@builder.io/qwik-city/adapters/cloudflare-pages/vite"; // Add adapter import
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,16 +12,9 @@ export default defineConfig(({ mode }) => {
   return {
     base: '/',
     plugins: [
-      qwikVite({
-        srcDir: "./src",
-        entryStrategy: { type: "hook" },
-        devTools: {
-          clickToSource: isDev
-        },
-        debug: isDev,
-        vendorRoots: isDev ? [] : undefined
-      }),
+      qwikVite(), // Simplify qwikVite options, let it use defaults
       qwikCity(),
+      cloudflarePagesAdapter() // Add adapter plugin
     ],
 
     server: {
@@ -52,7 +46,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       rollupOptions: {
-        // Input should be handled by the specific adapter config if needed
+        // Input is handled by qwikCity/adapter
         output: {
           manualChunks: (id) => {
             if (id.includes('node_modules/d3')) return 'd3';
@@ -63,7 +57,7 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/[name].[hash].js'
         }
       },
-      // ssr should be handled by the specific adapter config if needed
+      // ssr is handled by qwikCity/adapter
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
     },
