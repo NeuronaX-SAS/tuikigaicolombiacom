@@ -12,14 +12,12 @@ export default defineConfig(({ mode }) => {
   return {
     base: '/',
     plugins: [
-      qwikVite(), // Simplify qwikVite options, let it use defaults
+      qwikVite(), 
       qwikCity(),
-      // Add the adapter only during production builds
       !isDev && cloudflarePagesAdapter({
-        // Explicitly set the server output directory relative to dist
         serverOutDir: './server' 
       })
-    ].filter(Boolean), // Filter out falsy values like the adapter in dev mode
+    ].filter(Boolean), 
 
     server: {
       port: 3000,
@@ -40,7 +38,6 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2020',
       outDir: 'dist',
-      // assetsDir: 'assets', // Let adapter control asset paths
       cssCodeSplit: true,
       minify: 'terser',
       terserOptions: {
@@ -48,6 +45,10 @@ export default defineConfig(({ mode }) => {
           drop_console: mode === 'production',
           drop_debugger: mode === 'production',
         }
+      },
+      rollupOptions: {
+        // Add the SSR entry point for the adapter
+        input: ['src/entry.ssr.tsx', '@qwik-city-plan']
       },
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
