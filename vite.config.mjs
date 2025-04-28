@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2020',
       outDir: 'dist',
-      cssCodeSplit: true,
+      cssCodeSplit: false, // Temporarily disable CSS code splitting
       minify: 'terser',
       terserOptions: {
         compress: {
