@@ -559,7 +559,7 @@ export default component$(() => {
         {/* Encabezado y barra de progreso */}
         <div class="text-center mb-12">
           <img
-            src={getAssetPath('TuIkigai Logo_Recorte.png')}
+            src={getAssetPath('images/TuIkigai Logo_Recorte.png')}
             alt="TUIKIGAI Logo"
             class="w-24 h-24 object-contain mx-auto mb-6 animate-float filter drop-shadow-md"
           />
@@ -799,7 +799,8 @@ export default component$(() => {
 
             {/* Logo en posición absoluta */}
             <div class="absolute -top-10 -right-10 opacity-5">
-              <img src="/TuIkigai Logo_Recorte.png" alt="Logo" class="w-40 h-40" />
+              {/* Use getAssetPath con la ruta de imagen correcta */}
+              <img src={getAssetPath('images/TuIkigai Logo_Recorte.png')} alt="Logo" class="w-40 h-40" />
             </div>
 
             <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-1 sm:mb-2">¿Cómo deseas continuar?</h2>
