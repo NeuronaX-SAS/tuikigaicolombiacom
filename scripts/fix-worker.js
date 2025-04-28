@@ -15,7 +15,7 @@ try {
  * Worker script for Cloudflare Pages
  * This file properly imports from the correct asset path
  */
-import { fetch } from "./assets/entry.cloudflare-pages.js"; 
+import { fetch } from "./assets/assets/entry.cloudflare-pages.js"; // Adjusted path
 export default { fetch };
 `;
 
