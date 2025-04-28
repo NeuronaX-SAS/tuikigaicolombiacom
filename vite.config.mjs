@@ -2,7 +2,6 @@ import './src/utils/jsonPatch.js';
 import { defineConfig, loadEnv } from 'vite';
 import { qwikVite } from '@builder.io/qwik/optimizer';
 import { qwikCity } from '@builder.io/qwik-city/vite';
-import { cloudflarePagesAdapter } from "@builder.io/qwik-city/adapters/cloudflare-pages/vite"; // Add adapter import
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,9 +13,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       qwikVite(), 
       qwikCity(),
-      !isDev && cloudflarePagesAdapter({
-        serverOutDir: './server' 
-      })
     ].filter(Boolean), 
 
     server: {
@@ -45,10 +41,6 @@ export default defineConfig(({ mode }) => {
           drop_console: mode === 'production',
           drop_debugger: mode === 'production',
         }
-      },
-      rollupOptions: {
-        // Add the SSR entry point for the adapter
-        input: ['src/entry.ssr.tsx', '@qwik-city-plan']
       },
       reportCompressedSize: true,
       chunkSizeWarningLimit: 1000
