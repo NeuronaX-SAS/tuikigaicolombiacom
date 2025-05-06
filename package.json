@@ -5,7 +5,7 @@
   "scripts": {
     "build": "vite build",
     "build.server": "vite build -c adapters/cloudflare-pages/vite.config.ts",
-    "build.cloudflare": "npm run clean && npm run build && npm run build.server && npm run copy:assets", 
+    "build.cloudflare": "npm run clean && vite build -c cloudflare.config.mjs && npm run build.server && npm run copy:assets", 
     "copy:assets": "node scripts/copy-assets.js",
     "deploy": "npm run build.cloudflare && wrangler pages deploy ./dist --project-name tuikigaicolombiacom",
     "dev": "vite --force",

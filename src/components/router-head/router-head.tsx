@@ -26,7 +26,13 @@ export const RouterHead = component$(() => {
       ))}
 
       {head.styles.map((s) => (
-        <style key={s.key} {...s.props} dangerouslySetInnerHTML={s.style} />
+        <style 
+          key={s.key} 
+          {...s.props && Object.fromEntries(
+            Object.entries(s.props).filter(([key]) => key !== 'dangerouslySetInnerHTML')
+          )} 
+          dangerouslySetInnerHTML={s.style} 
+        />
       ))}
 
       {/* Add any other global head elements here */}
