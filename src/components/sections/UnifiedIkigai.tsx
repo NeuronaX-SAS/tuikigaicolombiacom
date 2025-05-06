@@ -96,24 +96,24 @@ export default component$(() => {
   // Mensajes motivacionales mejorados
   const motivationalMessages = {
     love: [
-      "¿Qué actividades te hacen perder la noción del tiempo?",
-      "¿Qué te apasiona tanto que podrías hacerlo durante horas?",
-      "¿Qué actividades te dan energía en lugar de agotarte?"
+      "¿Qué actividades amas, te apasionan, te hacen perder la noción del tiempo o disfrutabas profundamente de niño? (escribe varias palabras o frases)",
+      //"¿Qué te apasiona tanto que podrías hacerlo durante horas?",
+      //"¿Qué actividades te dan energía en lugar de agotarte?"
     ],
     talent: [
-      "¿Qué habilidades te han elogiado otras personas?",
-      "¿En qué destacas naturalmente sin mucho esfuerzo?",
-      "¿Qué tareas realizas mejor que la mayoría de personas?"
+      "¿En qué habilidades, capacidades y talentos destacas, resuenan contigo o te han reconocido que tienes? (escribe varias palabras o frases)",
+      //"¿En qué destacas naturalmente sin mucho esfuerzo?",
+      //"¿Qué tareas realizas mejor que la mayoría de personas?"
     ],
     need: [
-      "¿Qué problemas del mundo te gustaría resolver?",
-      "¿Cómo podrías contribuir a mejorar tu comunidad?",
-      "¿Qué necesidades observas que no están siendo atendidas?"
+      "¿De qué forma deseas servir al mundo, un problema que te gustaría resolver, una necesidad que te vincule o un cambio que deba realizarse? (escribe varias palabras o frases)",
+      //"¿Cómo podrías contribuir a mejorar tu comunidad?",
+      //"¿Qué necesidades observas que no están siendo atendidas?"
     ],
     payment: [
-      "¿Por qué habilidades estarían dispuestos a pagarte?",
-      "¿Qué valor económico puedes ofrecer al mercado?",
-      "¿Qué problemas puedes resolver que las personas pagarían por solucionar?"
+      "¿Por cuáles actividades puedes ser remunerado actualmente, qué labor u ocupación estarías dispuesto a realizar para ganar más dinero? (escribe varias palabras o frases)",
+      //"¿Qué valor económico puedes ofrecer al mercado?",
+      //"¿Qué problemas puedes resolver que las personas pagarían por solucionar?"
     ]
   };
 
@@ -608,7 +608,7 @@ export default component$(() => {
         {/* Mensaje motivacional basado en el progreso */}
         <div class="text-center mb-8 mt-4">
           <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10">
-            {getMotivationalMessage()}
+            Nuestro propósito es ayudarte a encontrar tú propósito
           </p>
         </div>
 
