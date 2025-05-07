@@ -185,8 +185,21 @@ export default component$(() => {
       return;
     }
 
-    // Obtener el color seleccionado
-    const selectedColor = await getSelectedColorName(); // Added await here
+    // Obtener el color seleccionado - Logic inlined here
+    let selectedColorName: string;
+    const ikigaiTemplates = [
+      { id: 'gris', name: 'Gris', color: 'bg-gray-400', path: getAssetPath('images/IKIGAI_Gris.png') },
+      { id: 'naranja', name: 'Naranja', color: 'bg-orange-500', path: getAssetPath('images/IKIGAI_Naranja.png') },
+      { id: 'rojo', name: 'Rojo', color: 'bg-red-600', path: getAssetPath('images/IKIGAI_Rojo.png') },
+      { id: 'verde', name: 'Verde', color: 'bg-green-600', path: getAssetPath('images/IKIGAI_Verde.png') },
+      { id: 'azul', name: 'Azul', color: 'bg-blue-600', path: getAssetPath('images/IKIGAI_Azul.png') },
+      { id: 'morado', name: 'Morado', color: 'bg-purple-600', path: getAssetPath('images/IKIGAI_Morado.png') },
+      { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/IKIGAI_Amarillo.png') }
+    ];
+    const selectedTemplate = ikigaiTemplates.find(
+      template => template.path === selectedIkigaiImage.value
+    );
+    selectedColorName = selectedTemplate ? selectedTemplate.name : 'Verde'; // Default to 'Verde' if not found
 
     // Guardar las respuestas en Firestore
     try {
@@ -196,7 +209,7 @@ export default component$(() => {
         talent: state.ikigaiResponses.talent,
         need: state.ikigaiResponses.need,
         payment: state.ikigaiResponses.payment,
-        colorSeleccionado: selectedColor, // Añadir el color seleccionado
+        colorSeleccionado: selectedColorName, // Use the inlined logic result
         timestamp: new Date().toISOString()
       };
       console.log('[handleSubmit] Intentando guardar respuestas del Ikigai:', ikigaiData);
@@ -213,7 +226,7 @@ export default component$(() => {
       // Usar Object.assign para añadir propiedades extra que el linter no conoce
       // de manera segura
       await firestoreService.saveIkigaiResponses(Object.assign(firestoreData, {
-        colorSeleccionado: selectedColor // Añadir el color seleccionado a Firestore
+        colorSeleccionado: selectedColorName // Use the inlined logic result
       }));
       
       // Mantener la llamada API original si es necesaria
