@@ -158,11 +158,9 @@ export default component$(() => {
   const handleInputChange = $((type: string, value: string) => {
     state.ikigaiResponses[type as keyof typeof state.ikigaiResponses] = value;
     characterCounts[type as keyof typeof characterCounts] = value.length;
-
-    // Si hay contenido y es la tarjeta actual, prepara para avanzar
-    if (value.trim().length > 10 && expandedCard.value === type) {
-      advanceToNext(type);
-    }
+    
+    // Eliminamos la navegación automática para que el usuario pueda escribir sin interrupciones
+    // Ya no avanzamos automáticamente después de escribir 10 caracteres
   });
 
   // Función para manejar el envío del formulario
@@ -209,7 +207,7 @@ export default component$(() => {
         love: state.ikigaiResponses.love,
         talent: state.ikigaiResponses.talent,
         need: state.ikigaiResponses.need,
-        money: state.ikigaiResponses.payment, // Mapear payment a money para Firestore
+        money: state.ikigaiResponses.payment // Mapear payment a money para Firestore
       };
       
       // Usar Object.assign para añadir propiedades extra que el linter no conoce
@@ -571,15 +569,15 @@ export default component$(() => {
     { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/Amarillo ikigai_00.png') }
   ];
 
-  // Función para obtener el color seleccionado en español
-  const getSelectedColorName = () => {
+  // Función para obtener el color seleccionado en español - definida con $ para reactivity
+  const getSelectedColorName = $(() => {
     // Encuentra el template cuyo path coincide con la imagen seleccionada
     const selectedTemplate = ikigaiTemplates.find(
       template => template.path === selectedIkigaiImage.value
     );
     // Retorna el nombre en español o un valor por defecto
     return selectedTemplate ? selectedTemplate.name : 'Verde';
-  };
+  });
 
   // Función para manejar la selección de color
   const handleColorSelection = $((templatePath: string) => {
