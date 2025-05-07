@@ -806,7 +806,7 @@ export default component$(() => {
                       />
                     </div>
                     <label for="terms" class="ml-3 text-sm text-slate-600">
-                      Acepto los <a href="/documents/Términos y Condiciones.pdf" download class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">términos y condiciones</a>
+                      Acepto los <a href="/terminos" target="_blank" class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">términos y condiciones</a>
                     </label>
                   </div>
 
@@ -821,7 +821,7 @@ export default component$(() => {
                       />
                     </div>
                     <label for="privacy" class="ml-3 text-sm text-slate-600">
-                      Acepto la <a href="/documents/Política de Tratamiento de Datos Personales.pdf" download class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">política de tratamiento de datos</a>
+                      Acepto la <a href="/privacidad" target="_blank" class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">política de tratamiento de datos</a>
                     </label>
                   </div>
                 </div>

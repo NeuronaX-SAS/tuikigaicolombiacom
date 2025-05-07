@@ -67,13 +67,13 @@ export default component$(() => {
             <h3 class="text-xl font-bold mb-4 text-tuikigai-teal">Legal</h3>
             <ul class="space-y-3">
               <li>
-                <a href={getAssetPath('documents/Política de Tratamiento de Datos Personales.pdf')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href="/privacidad" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Política de Tratamiento de Datos
                 </a>
               </li>
               <li>
-                <a href={getAssetPath('documents/Términos y Condiciones.pdf')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href="/terminos" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Términos y Condiciones
                 </a>
