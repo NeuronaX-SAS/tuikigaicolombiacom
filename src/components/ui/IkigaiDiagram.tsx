@@ -170,48 +170,18 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const footerTextX = size / 2;
     const logoY = size - frameWidth - footerHeight/2;
     
-    // Fondo para el footer (opcional)
+    // Añadir fondo para el texto del footer
     svg.append('rect')
-      .attr('x', frameWidth + (size - frameWidth * 2) * 0.2)
+      .attr('x', frameWidth + (size - frameWidth * 2) * 0.25)
       .attr('y', logoY - footerHeight * 0.25)
-      .attr('width', (size - frameWidth * 2) * 0.6)
+      .attr('width', (size - frameWidth * 2) * 0.5)
       .attr('height', footerHeight * 0.5)
       .attr('rx', 4)
       .attr('ry', 4)
       .attr('fill', 'rgba(47, 79, 79, 0.7)')
       .attr('filter', 'drop-shadow(0px 1px 2px rgba(0,0,0,0.2))');
     
-    // Logo posicionado a la izquierda del texto
-    const logoX = footerTextX - logoSize * 2;
-    
-    // Crear grupo para el logo
-    const logoGroup = svg.append('g')
-      .attr('transform', `translate(${logoX}, ${logoY}) scale(${logoSize/50})`);
-    
-    // Dibujar el logo
-    logoGroup.append('circle')
-      .attr('cx', 25).attr('cy', 25).attr('r', 23)
-      .attr('fill', 'none')
-      .attr('stroke', 'rgba(255,255,255,0.8)')
-      .attr('stroke-width', 2);
-    
-    logoGroup.append('ellipse')
-      .attr('cx', 25).attr('cy', 25)
-      .attr('rx', 23).attr('ry', 10)
-      .attr('fill', 'none')
-      .attr('stroke', 'rgba(255,255,255,0.8)')
-      .attr('stroke-width', 1.5)
-      .attr('transform', 'rotate(30 25 25)');
-    
-    logoGroup.append('ellipse')
-      .attr('cx', 25).attr('cy', 25)
-      .attr('rx', 23).attr('ry', 10)
-      .attr('fill', 'none')
-      .attr('stroke', 'rgba(255,255,255,0.8)')
-      .attr('stroke-width', 1.5)
-      .attr('transform', 'rotate(-30 25 25)');
-
-    // Texto TUIKIGAI (sin espacio) y frase
+    // Texto "TUIKIGAI" y frase (corregido sin espacio)
     svg.append('text')
       .attr('x', footerTextX)
       .attr('y', logoY - 5)
@@ -250,95 +220,97 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const needResponses = processUserInputs(responses.need);
     const paymentResponses = processUserInputs(responses.payment);
 
-    // Nueva función para renderizar respuestas con diseño mejorado y etiquetas dentro
+    // Nueva función para renderizar respuestas con un mejor diseño
     const displayUserResponses = (items: string[], center: {x: number, y: number}, key: string) => {
       if (items.length === 0) return;
       
-      // Configuración general
-      const fontSize = finalDiagramSize * 0.028;
-      const lineHeight = fontSize * 1.4;
-      
-      // Calcular posición óptima
-      let posX = center.x;
-      let posY = center.y;
-      
-      // Etiquetas para cada círculo - se mostrarán como título del contenedor
-      const labels = {
+      // Etiquetas de círculos para colocar en los contenedores de texto
+      const circleLabels = {
         love: "Amas",
         talent: "Tienes",
         need: "Ofreces",
         payment: "Ganas"
       };
       
+      // Configuración general para todas las áreas
+      const fontSize = finalDiagramSize * 0.03; // Fuente ligeramente más grande
+      const titleFontSize = fontSize * 1.2; // Título más grande
+      const lineHeight = fontSize * 1.4;
+      
+      // Calcular posición óptima según el área para centrar mejor
+      let posX = center.x;
+      let posY = center.y;
+      
       // Ajustes específicos para cada círculo
       switch(key) {
         case 'love': // Círculo superior (Amas)
-          posY = center.y - circleRadius * 0.1;
+          posY = center.y; // Centrado
           break;
         case 'talent': // Círculo izquierdo (Tienes)
-          posX = center.x - circleRadius * 0.05;
+          posX = center.x; // Centrado
           break;
         case 'need': // Círculo derecho (Ofreces)
-          posX = center.x + circleRadius * 0.05;
+          posX = center.x; // Centrado
           break;
         case 'payment': // Círculo inferior (Ganas)
-          posY = center.y + circleRadius * 0.1;
+          posY = center.y; // Centrado
           break;
       }
 
-      // Crear contenedor para respuestas
-      const responseContainer = g.append('g')
+      // Crear un contenedor que mantendrá el texto centrado
+      const textContainer = g.append('g')
         .attr('transform', `translate(${posX}, ${posY})`);
       
-      // Calcular dimensiones optimizadas
+      // Calcular dimensiones para el marco basado en el contenido
       const maxLength = items.reduce((max, item) => Math.max(max, item.length), 0);
+      // Estimar ancho basado en longitud de texto y tamaño de fuente
       const estimatedWidth = Math.min(
-        circleRadius * 1.6, // Usar más espacio ahora que eliminamos los mini-círculos
-        Math.max(maxLength * fontSize * 0.55, circleRadius * 0.6)
+        circleRadius * 1.6, // Hasta un 80% del diámetro
+        Math.max(maxLength * fontSize * 0.6, circleRadius * 0.7)
       );
       
-      // Añadir altura para la etiqueta
-      const containerHeight = items.length * lineHeight + 40; // Más espacio para etiqueta superior
+      // Altura basada en número de elementos y el título
+      const containerHeight = (items.length * lineHeight) + titleFontSize * 2 + 24; // Incluir espacio para título
       
-      // Fondo redondeado con mejor estilo
-      responseContainer.append('rect')
+      // Crear fondo redondeado con mejor estilo visual
+      textContainer.append('rect')
         .attr('x', -estimatedWidth/2)
         .attr('y', -containerHeight/2)
         .attr('width', estimatedWidth)
         .attr('height', containerHeight)
         .attr('rx', 16)
         .attr('ry', 16)
-        .attr('fill', 'rgba(255,255,255,0.94)')
-        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.3).toString())
-        .attr('stroke-width', 1.5)
+        .attr('fill', 'rgba(255,255,255,0.95)')
+        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.4).toString())
+        .attr('stroke-width', 2)
         .attr('filter', 'drop-shadow(0px 2px 4px rgba(0,0,0,0.15))');
       
-      // Añadir etiqueta superior dentro del contenedor
-      responseContainer.append('text')
+      // Agregar título (Amas, Tienes, etc.) en la parte superior del contenedor
+      textContainer.append('text')
         .attr('x', 0)
-        .attr('y', -containerHeight/2 + 22) // Posicionar cerca del borde superior
+        .attr('y', -containerHeight/2 + titleFontSize + 4) // Posición en la parte superior
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.2).toString())
-        .attr('font-size', fontSize * 1.05) // Ligeramente más grande
+        .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.7).toString())
+        .attr('font-size', titleFontSize)
         .attr('font-weight', 'bold')
         .attr('font-family', 'sans-serif')
-        .text(labels[key as keyof typeof labels]);
-      
-      // Línea divisoria sutil
-      responseContainer.append('line')
-        .attr('x1', -estimatedWidth/2 + 16)
-        .attr('y1', -containerHeight/2 + 32) 
-        .attr('x2', estimatedWidth/2 - 16)
-        .attr('y2', -containerHeight/2 + 32)
+        .text(circleLabels[key as keyof typeof circleLabels]);
+        
+      // Agregar línea separadora debajo del título
+      textContainer.append('line')
+        .attr('x1', -estimatedWidth/2 + 12)
+        .attr('x2', estimatedWidth/2 - 12)
+        .attr('y1', -containerHeight/2 + titleFontSize * 2)
+        .attr('y2', -containerHeight/2 + titleFontSize * 2)
         .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.3).toString())
-        .attr('stroke-width', 0.8)
-        .attr('opacity', 0.8);
+        .attr('stroke-width', 1)
+        .attr('opacity', 0.6);
       
-      // Calcular posición inicial para los elementos, ajustando por la etiqueta añadida
-      const startY = -((items.length - 1) * lineHeight) / 2 + 15;
+      // Calcular posición vertical inicial para los elementos
+      const contentStartY = -containerHeight/2 + titleFontSize * 2.5; // Comenzar después del título
       
-      // Renderizar respuestas con estilo mejorado
+      // Renderizar cada elemento con mejor estilo
       items.forEach((item, i) => {
         // Controlar longitud máxima
         let displayText = item;
@@ -346,9 +318,9 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
           displayText = item.substring(0, 27) + '...';
         }
         
-        responseContainer.append('text')
+        textContainer.append('text')
           .attr('x', 0)
-          .attr('y', startY + i * lineHeight)
+          .attr('y', contentStartY + i * lineHeight)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
           .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.5).toString())
@@ -358,7 +330,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
           .attr('letter-spacing', '0.2px')
           .text(displayText)
           .style('opacity', 0)
-          .transition().duration(250).delay(i * 70).style('opacity', 1);
+          .transition().duration(250).delay(i * 80).style('opacity', 1);
       });
     };
     
