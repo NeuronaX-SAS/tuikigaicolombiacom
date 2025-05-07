@@ -10,6 +10,7 @@ interface IkigaiDiagramProps {
     payment: string;
   };
   convergenceIndex: number;
+  userName?: string; // Nombre de usuario opcional
   ref?: any; // Para permitir la referencia externa al SVG
 }
 
@@ -17,16 +18,16 @@ interface IkigaiDiagramProps {
  * Componente IkigaiDiagram - Visualización interactiva del diagrama Ikigai
  * Versión premium con efectos visuales avanzados, brillos y partículas
  */
-export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, ref }) => {
+export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, userName, ref }) => {
   const diagramRef = useSignal<SVGSVGElement>();
   const containerRef = useSignal<HTMLDivElement>();
   
   // Colores para cada círculo del Ikigai usando la nueva paleta
   const colors = {
-    love: '#3b82f6',    // blue-500
-    talent: '#14b8a6',  // teal-500
-    need: '#a855f7',    // purple-500
-    payment: '#6366f1'  // indigo-500
+    love: '#3b82f6',      // blue-500
+    talent: '#14b8a6',    // teal-500 
+    need: '#a855f7',      // purple-500
+    payment: '#6366f1'    // indigo-500
   };
   
   // Colores para las intersecciones y texto
@@ -52,11 +53,15 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
       
       const stopWords = ['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'o', 'pero', 'porque', 'como', 'que', 'para', 'por', 'a', 'ante', 'bajo', 'con', 'contra', 'de', 'desde', 'en', 'entre', 'hacia', 'hasta', 'según', 'sin', 'sobre', 'tras'];
       
-      return text
+      // Extraer palabras significativas, evitando palabras vacías
+      let tokens = text
         .toLowerCase()
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
         .split(/\s+/)
         .filter(word => word.length > 2 && !stopWords.includes(word));
+      
+      // Limitar a máximo 10 palabras para evitar sobrecarga visual
+      return tokens.slice(0, 10);
     };
 
     // Función para encontrar intersecciones entre conjuntos
@@ -74,7 +79,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
 
     // Calcular el tamaño del diagrama manteniendo el aspecto cuadrado
     const size = Math.min(containerWidth, containerHeight);
-    const margin = size * 0.1; // 10% de margen
+    const margin = size * 0.05; // Reducido para aprovechar más espacio
     const diagramSize = size - (margin * 2);
 
     // Configurar el SVG con viewBox para mejor escalabilidad
@@ -84,7 +89,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
       .attr('viewBox', `0 0 ${size} ${size}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
-    // Agregar marco de madera al diagrama
+    // Agregar marco de madera al diagrama (similar a la imagen de referencia)
     const frameWidth = size * 0.05; // Ancho del marco
     
     // Rectángulo exterior (marco completo)
@@ -134,32 +139,39 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
       .attr('stroke-width', 1)
       .attr('filter', 'url(#wood-grain)');
 
-    // Rectángulo interior (área del contenido)
+    // Crear áreas verdes en la parte superior e inferior (como en la imagen de referencia)
+    const headerHeight = size * 0.12;
+    const footerHeight = size * 0.12;
+    
+    // Área verde superior
     svg.append('rect')
       .attr('x', frameWidth)
       .attr('y', frameWidth)
       .attr('width', size - (frameWidth * 2))
-      .attr('height', size - (frameWidth * 2))
-      .attr('rx', 3)
-      .attr('ry', 3)
+      .attr('height', headerHeight)
+      .attr('fill', '#2d6a4f') // Verde oscuro para la cabecera
+      .attr('rx', 2)
+      .attr('ry', 2);
+      
+    // Área verde inferior
+    svg.append('rect')
+      .attr('x', frameWidth)
+      .attr('y', size - frameWidth - footerHeight)
+      .attr('width', size - (frameWidth * 2))
+      .attr('height', footerHeight)
+      .attr('fill', '#2d6a4f') // Verde oscuro para el pie
+      .attr('rx', 2)
+      .attr('ry', 2);
+    
+    // Área blanca central para el diagrama
+    svg.append('rect')
+      .attr('x', frameWidth)
+      .attr('y', frameWidth + headerHeight)
+      .attr('width', size - (frameWidth * 2))
+      .attr('height', size - (frameWidth * 2) - headerHeight - footerHeight)
       .attr('fill', 'white')
-      .attr('stroke', '#9c7e52')
-      .attr('stroke-width', 1);
-
-    // Crear el grupo principal centrado (ajustado al marco)
-    const g = svg.append('g')
-      .attr('transform', `translate(${margin + frameWidth/2}, ${margin + frameWidth/2})`);
-
-    // Radio de los círculos (ajustado al tamaño del diagrama)
-    const circleRadius = (diagramSize - frameWidth) * 0.35;
-
-    // Posiciones de los centros de los círculos (formato flor) - Intercambiamos talent y need
-    const centers = {
-      love: { x: diagramSize / 2, y: diagramSize * 0.25 },
-      need: { x: diagramSize * 0.75, y: diagramSize / 2 }, // Movido al lado derecho
-      payment: { x: diagramSize / 2, y: diagramSize * 0.75 },
-      talent: { x: diagramSize * 0.25, y: diagramSize / 2 } // Movido al lado izquierdo
-    };
+      .attr('stroke', '#e5e7eb')
+      .attr('stroke-width', 0.5);
 
     // Crear filtros para efectos visuales avanzados
     const defs = svg.append('defs');
@@ -173,7 +185,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
       .attr('height', '200%');
 
     glow.append('feGaussianBlur')
-      .attr('stdDeviation', '4')
+      .attr('stdDeviation', '2')
       .attr('result', 'coloredBlur');
 
     const feMerge = glow.append('feMerge');
@@ -192,7 +204,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
       
     halo.append('feGaussianBlur')
       .attr('in', 'SourceAlpha')
-      .attr('stdDeviation', '7')
+      .attr('stdDeviation', '3')
       .attr('result', 'blur');
       
     halo.append('feFlood')
@@ -212,6 +224,36 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
     feMergeHalo.append('feMergeNode')
       .attr('in', 'SourceGraphic');
 
+    // Crea un filtro para contornos más definidos
+    const outlineFilter = defs.append('filter')
+      .attr('id', 'outline')
+      .attr('x', '-10%')
+      .attr('y', '-10%')
+      .attr('width', '120%')
+      .attr('height', '120%');
+      
+    outlineFilter.append('feMorphology')
+      .attr('operator', 'dilate')
+      .attr('radius', '1')
+      .attr('in', 'SourceAlpha')
+      .attr('result', 'thicken');
+      
+    outlineFilter.append('feFlood')
+      .attr('flood-color', '#4b5563')
+      .attr('result', 'outlineColor');
+      
+    outlineFilter.append('feComposite')
+      .attr('in', 'outlineColor')
+      .attr('in2', 'thicken')
+      .attr('operator', 'in')
+      .attr('result', 'outline');
+      
+    const feMergeOutline = outlineFilter.append('feMerge');
+    feMergeOutline.append('feMergeNode')
+      .attr('in', 'outline');
+    feMergeOutline.append('feMergeNode')
+      .attr('in', 'SourceGraphic');
+
     // Gradientes radiales sofisticados para cada círculo
     Object.entries(colors).forEach(([key, color]) => {
       // Gradiente principal con efecto 3D
@@ -225,132 +267,160 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
 
       gradient.append('stop')
         .attr('offset', '0%')
-        .attr('stop-color', d3.rgb(color).brighter(0.8).toString())
-        .attr('stop-opacity', '0.3'); // Transparencia
+        .attr('stop-color', d3.rgb(color).brighter(0.5).toString())
+        .attr('stop-opacity', '0.25'); // Transparencia
 
       gradient.append('stop')
         .attr('offset', '80%')
         .attr('stop-color', color)
-        .attr('stop-opacity', '0.3'); // Transparencia
+        .attr('stop-opacity', '0.25'); // Transparencia
         
       gradient.append('stop')
         .attr('offset', '100%')
-        .attr('stop-color', d3.rgb(color).darker(0.5).toString())
-        .attr('stop-opacity', '0.3'); // Transparencia
-        
-      // Gradiente secundario para el contorno luminoso
-      const glowGradient = defs.append('radialGradient')
-        .attr('id', `glow-gradient-${key}`)
-        .attr('cx', '0.5')
-        .attr('cy', '0.5')
-        .attr('r', '0.9')
-        .attr('fx', '0.5')
-        .attr('fy', '0.5');
-        
-      glowGradient.append('stop')
-        .attr('offset', '50%')
-        .attr('stop-color', d3.rgb(color).brighter(0.5).toString())
-        .attr('stop-opacity', '0.2'); // Más transparente
-        
-      glowGradient.append('stop')
-        .attr('offset', '100%')
-        .attr('stop-color', d3.rgb(color).brighter(0.3).toString())
-        .attr('stop-opacity', '0');
+        .attr('stop-color', d3.rgb(color).darker(0.3).toString())
+        .attr('stop-opacity', '0.25'); // Transparencia
     });
     
-    // Fondo sutil para mejorar la visibilidad
-    g.append('rect')
-      .attr('x', 0)
-      .attr('y', 0) 
-      .attr('width', diagramSize)
-      .attr('height', diagramSize)
-      .attr('rx', 20)
-      .attr('ry', 20)
+    // Crear el grupo principal centrado y ajustado para acomodar los elementos de cabecera y pie
+    const g = svg.append('g')
+      .attr('transform', `translate(${margin + frameWidth}, ${margin + frameWidth + headerHeight})`);
+
+    // Ajustar el tamaño del área de dibujo del diagrama para dejar espacio para cabecera y pie
+    const adjustedDiagramSize = size - (frameWidth * 2) - margin * 2 - headerHeight - footerHeight;
+    
+    // Radio de los círculos (ajustado al tamaño del diagrama)
+    const circleRadius = adjustedDiagramSize * 0.38;
+
+    // Posiciones de los centros de los círculos (formato flor)
+    const centers = {
+      love: { x: adjustedDiagramSize / 2, y: adjustedDiagramSize * 0.22 },
+      talent: { x: adjustedDiagramSize * 0.22, y: adjustedDiagramSize / 2 },
+      need: { x: adjustedDiagramSize * 0.78, y: adjustedDiagramSize / 2 },
+      payment: { x: adjustedDiagramSize / 2, y: adjustedDiagramSize * 0.78 }
+    };
+
+    // Nombres de los círculos y posición
+    const circleLabels = {
+      love: { text: "Lo que te motiva", pos: { x: centers.love.x, y: adjustedDiagramSize * 0.08 } },
+      talent: { text: "Entregas al mundo", pos: { x: adjustedDiagramSize * 0.08, y: centers.talent.y } },
+      need: { text: "En lo que eres bueno", pos: { x: adjustedDiagramSize * 0.92, y: centers.need.y } },
+      payment: { text: "Por lo que te pagarían", pos: { x: centers.payment.x, y: adjustedDiagramSize * 0.92 } }
+    };
+
+    // Añadir etiquetas centradas en los bordes (como en la imagen)
+    svg.append('text')
+      .attr('x', size / 2)
+      .attr('y', frameWidth + headerHeight * 0.55)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
       .attr('fill', 'white')
-      .attr('fill-opacity', 1);
+      .attr('font-size', headerHeight * 0.45)
+      .attr('font-weight', 'bold')
+      .text(userName && userName.trim() ? userName : "Tu nombre");
     
-    // Reducimos la cantidad de partículas para un diseño más minimalista
-    for (let i = 0; i < 15; i++) {
-      const particleSize = Math.random() * 1.5 + 0.5; // Partículas más pequeñas
-      const x = Math.random() * diagramSize;
-      const y = Math.random() * diagramSize;
-      const opacity = Math.random() * 0.2 + 0.1;
+    // Texto del pie con logo y frase
+    // Logo "átomo" de TUIKIGAI
+    const logoSize = footerHeight * 0.5;
+    const logoX = frameWidth + (size - frameWidth * 2) * 0.15;
+    const logoY = size - frameWidth - footerHeight/2;
+    
+    // Crear átomo simple como logo
+    svg.append('circle')
+      .attr('cx', logoX)
+      .attr('cy', logoY)
+      .attr('r', logoSize/2)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.7)')
+      .attr('stroke-width', 1.5);
       
-      g.append('circle')
-        .attr('cx', x)
-        .attr('cy', y)
-        .attr('r', particleSize)
-        .attr('fill', 'rgb(100,100,100)') // Color más sutil
-        .attr('fill-opacity', opacity)
-        .attr('class', 'particle')
-        .style('animation', `sparkle ${Math.random() * 3 + 4}s infinite ${Math.random() * 2}s`);
-    }
+    svg.append('ellipse')
+      .attr('cx', logoX)
+      .attr('cy', logoY)
+      .attr('rx', logoSize/2)
+      .attr('ry', logoSize/4)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.7)')
+      .attr('stroke-width', 1)
+      .attr('transform', `rotate(30, ${logoX}, ${logoY})`);
+      
+    svg.append('ellipse')
+      .attr('cx', logoX)
+      .attr('cy', logoY)
+      .attr('rx', logoSize/2)
+      .attr('ry', logoSize/4)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.7)')
+      .attr('stroke-width', 1)
+      .attr('transform', `rotate(-30, ${logoX}, ${logoY})`);
 
-    // Dibujar los halos brillantes (detrás de los círculos)
-    Object.entries(centers).forEach(([key, center]) => {
-      g.append('circle')
-        .attr('cx', center.x)
-        .attr('cy', center.y)
-        .attr('r', circleRadius + 5)
-        .attr('fill', `url(#glow-gradient-${key})`)
-        .attr('filter', 'url(#soft-halo)')
-        .attr('class', 'glow-circle')
-        .style('opacity', 0.3)
-        .style('animation', 'pulse-subtle 4s infinite');
-    });
+    // Texto "TU IKIGAI"
+    svg.append('text')
+      .attr('x', logoX + logoSize * 1.2)
+      .attr('y', logoY + logoSize * 0.12)
+      .attr('text-anchor', 'left')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', 'white')
+      .attr('font-size', logoSize * 0.9)
+      .attr('font-weight', 'bold')
+      .text("TU IKIGAI");
+      
+    // Frase de propósito en la parte inferior
+    svg.append('text')
+      .attr('x', size / 2)
+      .attr('y', size - frameWidth - footerHeight/2 + logoSize * 0.6)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'white')
+      .attr('font-size', logoSize * 0.5)
+      .attr('font-style', 'italic')
+      .text('"La frase que representa tu propósito de vida"');
 
-    // Dibujar los círculos principales con gradientes y efectos
+    // Dibujar los círculos principales con gradientes y efectos, usando más opacidad para mejor visualización
     Object.entries(centers).forEach(([key, center]) => {
       g.append('circle')
         .attr('cx', center.x)
         .attr('cy', center.y)
         .attr('r', circleRadius)
         .attr('fill', `url(#gradient-${key})`)
-        .attr('fill-opacity', 0.6) // Más transparente
         .attr('stroke', colors[key as keyof typeof colors])
-        .attr('stroke-width', 1.5) // Línea más fina, más minimalista
-        .attr('stroke-opacity', 0.7) // Línea semi-transparente
-        .attr('filter', 'url(#soft-halo)')
-        .attr('class', 'ikigai-circle')
-        .style('transition', 'all 0.5s ease');
-      
-      // Añadir etiquetas de los círculos
-      const labels = {
-        love: 'LO QUE TE MOTIVA',
-        talent: 'ENTREGAS AL MUNDO',
-        need: 'EN LO QUE ERES BUENO',
-        payment: 'POR LO QUE TE PAGARÍAN'
-      };
-      
-      // Posiciones ajustadas para las etiquetas
-      let labelX = center.x;
-      let labelY = center.y;
-      
-      switch(key) {
-        case 'love':
-          labelY -= circleRadius * 0.85;
-          break;
-        case 'need': // Antes era talent
-          labelX += circleRadius * 0.85;
-          break;
-        case 'talent': // Antes era need
-          labelX -= circleRadius * 0.85;
-          break;
-        case 'payment':
-          labelY += circleRadius * 0.85;
-          break;
-      }
+        .attr('stroke-width', 1.5)
+        .attr('stroke-opacity', 0.7)
+        .attr('class', 'ikigai-circle');
+    });
+
+    // Añadir etiquetas de los círculos con mejor posicionamiento
+    Object.entries(circleLabels).forEach(([key, {text, pos}]) => {
+      // Añadir la etiqueta circular arriba (como en la imagen de referencia)
+      const labelBgRadius = 15;
+      g.append('circle')
+        .attr('cx', pos.x)
+        .attr('cy', pos.y)
+        .attr('r', labelBgRadius)
+        .attr('fill', '#e2e8f0')
+        .attr('stroke', colors[key as keyof typeof colors])
+        .attr('stroke-width', 1.5);
       
       g.append('text')
-        .attr('x', labelX)
-        .attr('y', labelY)
+        .attr('x', pos.x)
+        .attr('y', pos.y)
         .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('font-size', adjustedDiagramSize * 0.018)
+        .attr('fill', '#334155')
         .attr('font-weight', 'bold')
-        .attr('font-size', diagramSize * 0.018)
-        .attr('fill', colors[key as keyof typeof colors])
-        .attr('filter', 'url(#soft-halo)')
         .attr('class', 'select-none pointer-events-none')
-        .text(labels[key as keyof typeof labels]);
+        .text(key.toUpperCase());
+      
+      // Añadir el texto principal en el centro del círculo
+      g.append('text')
+        .attr('x', centers[key as keyof typeof centers].x)
+        .attr('y', centers[key as keyof typeof centers].y)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('font-size', adjustedDiagramSize * 0.022)
+        .attr('fill', colors[key as keyof typeof colors])
+        .attr('font-weight', 'bold')
+        .attr('class', 'select-none pointer-events-none main-label')
+        .text(text);
     });
 
     // Tokenizar las respuestas
@@ -359,207 +429,153 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
     const needTokens = tokenizeText(responses.need);
     const paymentTokens = tokenizeText(responses.payment);
 
-    // Encontrar intersecciones
-    const loveTalentIntersection = findIntersections(loveTokens, talentTokens);
-    const loveNeedIntersection = findIntersections(loveTokens, needTokens);
-    const lovePaymentIntersection = findIntersections(loveTokens, paymentTokens);
-    const talentNeedIntersection = findIntersections(talentTokens, needTokens);
-    const talentPaymentIntersection = findIntersections(talentTokens, paymentTokens);
-    const needPaymentIntersection = findIntersections(needTokens, paymentTokens);
-
-    // Intersecciones triples
-    const loveTalentNeedIntersection = loveTalentIntersection.filter(word => needTokens.includes(word));
-    const loveTalentPaymentIntersection = loveTalentIntersection.filter(word => paymentTokens.includes(word));
-    const loveNeedPaymentIntersection = loveNeedIntersection.filter(word => paymentTokens.includes(word));
-    const talentNeedPaymentIntersection = talentNeedIntersection.filter(word => paymentTokens.includes(word));
-
-    // Intersección cuádruple (Ikigai)
-    const ikigaiIntersection = loveTalentNeedIntersection.filter(word => paymentTokens.includes(word));
-
-    // Función para colocar palabras en los círculos con efecto dinámico
-    const placeWords = (words: string[], x: number, y: number, color: string) => {
+    // Función mejorada para colocar palabras en los círculos con distribución controlada
+    const placeWords = (words: string[], centerX: number, centerY: number, color: string, radius: number) => {
       if (words.length === 0) return;
 
-      const fontSize = diagramSize * 0.02; // Tamaño de fuente proporcional
-      const spread = circleRadius * 0.6;
-      const angleStep = (2 * Math.PI) / words.length;
-
+      // Calcular el tamaño de fuente basado en el tamaño del diagrama y la cantidad de palabras
+      const baseFontSize = adjustedDiagramSize * 0.018;
+      const fontSize = Math.max(baseFontSize * (1 - words.length/20), baseFontSize * 0.7);
+      
+      // Definir una distribución radial para ubicar las palabras
+      const numWords = words.length;
+      const angleStep = (Math.PI * 2) / numWords;
+      const innerRadius = radius * 0.35; // Mantener alejado del centro
+      const outerRadius = radius * 0.7;  // No llegar hasta el borde
+      
+      // Crear elementos de texto para cada palabra
       words.forEach((word, i) => {
+        // Calcular ángulo para distribución uniforme
         const angle = i * angleStep;
-        const wordX = x + Math.cos(angle) * (Math.random() * spread * 0.8 + spread * 0.2);
-        const wordY = y + Math.sin(angle) * (Math.random() * spread * 0.8 + spread * 0.2);
-
-        // Texto con sombra
+        
+        // Variar la distancia para evitar un patrón demasiado regular
+        const distance = innerRadius + (Math.random() * (outerRadius - innerRadius));
+        
+        // Calcular posición
+        const x = centerX + Math.cos(angle) * distance;
+        const y = centerY + Math.sin(angle) * distance;
+        
+        // Añadir texto con estilo mejorado y contorno para legibilidad
         g.append('text')
-          .attr('x', wordX)
-          .attr('y', wordY)
+          .attr('x', x)
+          .attr('y', y)
           .attr('text-anchor', 'middle')
-          .attr('fill', d3.rgb(color).brighter(0.3).toString())
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', color)
           .attr('font-size', fontSize)
           .attr('font-weight', 'bold')
-          .attr('class', 'select-none pointer-events-none keyword-text')
-          .attr('filter', 'url(#soft-halo)')
-          .text(word)
+          .attr('stroke', 'white')
+          .attr('stroke-width', 0.7)
+          .attr('paint-order', 'stroke')
+          .attr('class', 'word-label')
           .style('opacity', 0)
+          .text(word)
           .transition()
           .duration(500)
           .delay(i * 50)
-          .style('opacity', 0.5); // Menos opaco para un efecto más sutil
+          .style('opacity', 1);
       });
     };
 
     // Colocar palabras en cada sección con animación suave
-    Object.entries(centers).forEach(([key, center]) => {
-      const tokens = key === 'love' ? loveTokens :
-                    key === 'talent' ? talentTokens :
-                    key === 'need' ? needTokens :
-                    paymentTokens;
-      
-      placeWords(tokens, center.x, center.y, colors[key as keyof typeof colors]);
-    });
+    placeWords(loveTokens, centers.love.x, centers.love.y, colors.love, circleRadius);
+    placeWords(talentTokens, centers.talent.x, centers.talent.y, colors.talent, circleRadius);
+    placeWords(needTokens, centers.need.x, centers.need.y, colors.need, circleRadius);
+    placeWords(paymentTokens, centers.payment.x, centers.payment.y, colors.payment, circleRadius);
 
-    // Añadir etiquetas de las intersecciones con efectos premium
-    const addIntersectionLabel = (text: string, x: number, y: number, color: string) => {
-      // Círculo de fondo para la etiqueta
-      g.append('circle')
-        .attr('cx', x)
-        .attr('cy', y)
-        .attr('r', diagramSize * 0.045)
-        .attr('fill', 'rgba(255,255,255,0.6)') // Fondo más claro y transparente
+    // Añadir etiquetas en las intersecciones principales con mejores efectos visuales
+    const addIntersectionLabel = (text: string, x: number, y: number, color: string, angle: number = 0) => {
+      // Crear un contenedor con rotación para el texto
+      const group = g.append('g')
+        .attr('transform', `translate(${x}, ${y}) rotate(${angle})`);
+      
+      // Rectángulo con esquinas redondeadas como fondo
+      group.append('rect')
+        .attr('x', -adjustedDiagramSize * 0.06)
+        .attr('y', -adjustedDiagramSize * 0.02)
+        .attr('width', adjustedDiagramSize * 0.12)
+        .attr('height', adjustedDiagramSize * 0.04)
+        .attr('rx', adjustedDiagramSize * 0.01)
+        .attr('ry', adjustedDiagramSize * 0.01)
+        .attr('fill', 'white')
         .attr('stroke', color)
         .attr('stroke-width', 1.5)
         .attr('filter', 'url(#soft-halo)');
       
-      g.append('text')
-        .attr('x', x)
-        .attr('y', y + diagramSize * 0.006) // Ajuste vertical para centrado visual
+      // Texto centrado
+      group.append('text')
+        .attr('x', 0)
+        .attr('y', 0)
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
         .attr('fill', color)
-        .attr('font-size', diagramSize * 0.025)
+        .attr('font-size', adjustedDiagramSize * 0.025)
         .attr('font-weight', 'bold')
-        .attr('class', 'select-none pointer-events-none')
-        .attr('filter', 'url(#soft-halo)')
+        .attr('class', 'intersection-label')
         .text(text);
     };
 
-    // Añadir etiquetas en las intersecciones principales
+    // Calcular los puntos medios para las intersecciones
     const midpoint = (a: {x: number, y: number}, b: {x: number, y: number}) => ({
       x: (a.x + b.x) / 2,
       y: (a.y + b.y) / 2
     });
 
-    // Añadir etiquetas de las intersecciones
-    const intersectionLabels = {
-      loveTalent: { text: "PASIÓN", pos: midpoint(centers.love, centers.talent) },
-      loveNeed: { text: "MISIÓN", pos: midpoint(centers.love, centers.need) },
-      talentPayment: { text: "PROFESIÓN", pos: midpoint(centers.talent, centers.payment) },
-      needPayment: { text: "VOCACIÓN", pos: midpoint(centers.need, centers.payment) }
-    };
+    // Dibujar las etiquetas de intersección con ángulos ajustados
+    const intersectionLabels = [
+      { text: "PASIÓN", pos: midpoint(centers.love, centers.talent), color: intersectionColors.loveTalent, angle: -45 },
+      { text: "MISIÓN", pos: midpoint(centers.love, centers.need), color: intersectionColors.loveNeed, angle: 45 },
+      { text: "PROFESIÓN", pos: midpoint(centers.talent, centers.payment), color: intersectionColors.talentPayment, angle: 45 },
+      { text: "VOCACIÓN", pos: midpoint(centers.need, centers.payment), color: intersectionColors.needPayment, angle: -45 }
+    ];
 
-    Object.entries(intersectionLabels).forEach(([key, { text, pos }]) => {
-      addIntersectionLabel(text, pos.x, pos.y, intersectionColors[key as keyof typeof intersectionColors]);
+    intersectionLabels.forEach(({ text, pos, color, angle }) => {
+      addIntersectionLabel(text, pos.x, pos.y, color, angle);
     });
 
-    // Añadir etiqueta central "IKIGAI" con efectos especiales si hay intersección
-    // Centro del diagrama
-    const centerX = diagramSize / 2;
-    const centerY = diagramSize / 2;
+    // Añadir etiqueta central "IKIGAI" con mejores efectos
+    const centerX = adjustedDiagramSize / 2;
+    const centerY = adjustedDiagramSize / 2;
     
-    // Círculo de fondo brillante para IKIGAI
+    // Círculo central con efecto de brillo
     g.append('circle')
       .attr('cx', centerX)
       .attr('cy', centerY)
-      .attr('r', diagramSize * 0.06)
-      .attr('fill', 'rgba(255,255,255,0.6)')
+      .attr('r', adjustedDiagramSize * 0.06)
+      .attr('fill', 'white')
       .attr('stroke', intersectionColors.center)
       .attr('stroke-width', 2)
-      .attr('filter', 'url(#soft-halo)')
-      .style('animation', 'pulse-subtle 3s infinite');
+      .attr('filter', 'url(#glow-premium)');
     
-    // Texto IKIGAI (más grande)
+    // Texto IKIGAI en el centro
     g.append('text')
       .attr('x', centerX)
-      .attr('y', centerY + diagramSize * 0.008) // Ajuste vertical
+      .attr('y', centerY)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
       .attr('fill', intersectionColors.center)
-      .attr('font-size', diagramSize * 0.050) // Texto más grande
+      .attr('font-size', adjustedDiagramSize * 0.035)
       .attr('font-weight', 'bold')
       .attr('class', 'select-none pointer-events-none')
-      .attr('filter', 'url(#soft-halo)')
       .text("IKIGAI");
-      
-    // Palabras del Ikigai (si hay)
-    if (ikigaiIntersection.length > 0) {
-      ikigaiIntersection.forEach((word, i) => {
-        const angle = (i / ikigaiIntersection.length) * 2 * Math.PI;
-        const distance = diagramSize * 0.10; // Mayor distancia para acomodar texto central más grande
-        const x = centerX + Math.cos(angle) * distance;
-        const y = centerY + Math.sin(angle) * distance;
-        
-        g.append('text')
-          .attr('x', x)
-          .attr('y', y)
-          .attr('text-anchor', 'middle')
-          .attr('fill', intersectionColors.center)
-          .attr('font-size', diagramSize * 0.030) // Más grande
-          .attr('font-weight', 'bold')
-          .attr('class', 'ikigai-keyword select-none pointer-events-none')
-          .text(word)
-          .style('opacity', 0)
-          .transition()
-          .duration(800)
-          .delay(i * 100 + 500)
-          .style('opacity', 0.8);
-      });
-    }
     
-    // Minimizar el indicador de convergencia para un diseño más limpio
-    if (convergenceIndex > 0 && false) { // Desactivado para un diseño más minimalista
-      const gaugeRadius = diagramSize * 0.04;
-      const gaugeX = margin * 0.5;
-      const gaugeY = margin * 0.5;
-      
-      // Fondo del medidor
-      g.append('circle')
-        .attr('cx', gaugeX)
-        .attr('cy', gaugeY)
-        .attr('r', gaugeRadius)
-        .attr('fill', 'rgba(255,255,255,0.7)')
-        .attr('stroke', colors.love)
-        .attr('stroke-width', 1)
-        .attr('stroke-opacity', 0.5);
-      
-      // Arco de progreso
-      const arc = d3.arc()
-        .innerRadius(gaugeRadius - 3)
-        .outerRadius(gaugeRadius)
-        .startAngle(0)
-        .endAngle(convergenceIndex / 100 * 2 * Math.PI);
-        
-      g.append('path')
-        .attr('d', arc as unknown as string)
-        .attr('fill', colors.love)
-        .attr('fill-opacity', 0.5)
-        .attr('transform', `translate(${gaugeX}, ${gaugeY})`)
-        .attr('filter', 'url(#soft-halo)')
-        .style('opacity', 0)
-        .transition()
-        .duration(1000)
-        .style('opacity', 0.7);
-      
-      // Texto de convergencia
-      g.append('text')
-        .attr('x', gaugeX)
-        .attr('y', gaugeY)
-        .attr('text-anchor', 'middle')
-        .attr('dominant-baseline', 'middle')
-        .attr('fill', colors.love)
-        .attr('font-size', diagramSize * 0.018)
-        .attr('font-weight', 'bold')
-        .attr('class', 'select-none pointer-events-none')
-        .text(`${Math.round(convergenceIndex)}%`);
+    // Encontrar palabras que aparecen en múltiples áreas
+    const loveTalentIntersection = findIntersections(loveTokens, talentTokens);
+    const loveNeedIntersection = findIntersections(loveTokens, needTokens);
+    const talentPaymentIntersection = findIntersections(talentTokens, paymentTokens);
+    const needPaymentIntersection = findIntersections(needTokens, paymentTokens);
+
+    // Intersección cuádruple (auténtico Ikigai)
+    const centerIntersection = loveTokens.filter(word => 
+      talentTokens.includes(word) && 
+      needTokens.includes(word) && 
+      paymentTokens.includes(word)
+    );
+
+    // Si hay palabras en la intersección central, mostrarlas alrededor del centro
+    if (centerIntersection.length > 0) {
+      const radius = adjustedDiagramSize * 0.12;
+      placeWords(centerIntersection, centerX, centerY, intersectionColors.center, radius);
     }
   });
 
@@ -569,6 +585,19 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
         ref={ref || diagramRef} 
         class="w-full h-full relative z-10"
       ></svg>
+      <style>{`
+        @keyframes pulse-subtle {
+          0% { opacity: 0.7; }
+          50% { opacity: 1; }
+          100% { opacity: 0.7; }
+        }
+        .word-label {
+          transition: all 0.3s ease;
+        }
+        .intersection-label {
+          transition: all 0.3s ease;
+        }
+      `}</style>
     </div>
   );
 });

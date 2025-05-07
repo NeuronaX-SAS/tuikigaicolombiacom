@@ -874,7 +874,8 @@ export default component$(() => {
                       <div class="w-full h-full p-4">
                         <IkigaiDiagram 
                           responses={state.ikigaiResponses} 
-                          convergenceIndex={state.convergenceIndex} 
+                          convergenceIndex={state.convergenceIndex}
+                          userName={state.userName}
                           ref={svgRef}
                         />
                       </div>
