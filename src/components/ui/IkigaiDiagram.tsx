@@ -380,21 +380,29 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
     const placeWords = (words: string[], x: number, y: number, color: string) => {
       if (words.length === 0) return;
 
-      const fontSize = diagramSize * 0.02; // Tamaño de fuente proporcional
-      const spread = circleRadius * 0.6;
-      const angleStep = (2 * Math.PI) / words.length;
+      // Limitar a menos palabras para una mejor presentación
+      const displayWords = words.slice(0, Math.min(words.length, 8));
+      
+      // Aumentar el tamaño de fuente para que sea más legible como en la imagen de referencia
+      const fontSize = diagramSize * 0.025; // Tamaño de fuente más grande
+      
+      // Reducir el área de distribución para mantener texto dentro del círculo
+      const spread = circleRadius * 0.5;
+      const angleStep = (2 * Math.PI) / displayWords.length;
 
-      words.forEach((word, i) => {
+      displayWords.forEach((word, i) => {
         const angle = i * angleStep;
-        const wordX = x + Math.cos(angle) * (Math.random() * spread * 0.8 + spread * 0.2);
-        const wordY = y + Math.sin(angle) * (Math.random() * spread * 0.8 + spread * 0.2);
+        // Usar una distancia más controlada para mantener el texto dentro del círculo
+        const distance = spread * 0.75; // Distancia más constante del centro
+        const wordX = x + Math.cos(angle) * distance;
+        const wordY = y + Math.sin(angle) * distance;
 
-        // Texto con sombra
+        // Texto con mejor contraste y visibilidad
         g.append('text')
           .attr('x', wordX)
           .attr('y', wordY)
           .attr('text-anchor', 'middle')
-          .attr('fill', d3.rgb(color).brighter(0.3).toString())
+          .attr('fill', d3.rgb(color).darker(0.5).toString()) // Color más oscuro para mejor legibilidad
           .attr('font-size', fontSize)
           .attr('font-weight', 'bold')
           .attr('class', 'select-none pointer-events-none keyword-text')
@@ -404,7 +412,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, re
           .transition()
           .duration(500)
           .delay(i * 50)
-          .style('opacity', 0.5); // Menos opaco para un efecto más sutil
+          .style('opacity', 0.9); // Mayor opacidad para mejor legibilidad
       });
     };
 
