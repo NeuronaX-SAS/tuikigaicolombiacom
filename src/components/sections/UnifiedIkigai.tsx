@@ -666,13 +666,11 @@ export default component$(() => {
             <div class="relative">
               <button 
                 onClick$={() => toggleTooltip('ikigai')}
-                class="w-8 h-8 rounded-full bg-white shadow-md text-teal-500 border border-teal-300 flex items-center justify-center hover:bg-teal-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-300"
+                class="px-3 py-1.5 rounded-full bg-white shadow-md text-teal-600 border border-teal-300 flex items-center hover:bg-teal-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-300 text-xs font-medium"
                 aria-label="¿Qué es el Ikigai?"
                 title="¿Qué es el Ikigai?"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                ¿Qué es el Ikigai?
               </button>
               
               {/* Contenido del tooltip */}
@@ -693,13 +691,11 @@ export default component$(() => {
             <div class="relative">
               <button 
                 onClick$={() => toggleTooltip('tuikigai')}
-                class="w-8 h-8 rounded-full bg-white shadow-md text-blue-500 border border-blue-300 flex items-center justify-center hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
+                class="px-3 py-1.5 rounded-full bg-white shadow-md text-blue-600 border border-blue-300 flex items-center hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 text-xs font-medium"
                 aria-label="¿Qué hacemos en tu Ikigai?"
                 title="¿Qué hacemos en tu Ikigai?"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                ¿Qué hacemos en tu Ikigai?
               </button>
               
               {/* Contenido del tooltip */}
