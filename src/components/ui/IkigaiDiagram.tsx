@@ -168,28 +168,74 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const logoSize = footerHeight * 0.4;
     // Centrado del footer
     const footerTextX = size / 2;
-    const logoX = footerTextX - (size - frameWidth * 2) * 0.25;
+    
+    // Reposicionando el logo para que esté centrado correctamente
     const logoY = size - frameWidth - footerHeight/2;
+    
+    // Añadir fondo para el texto del footer (opcional, para mejor separación)
+    svg.append('rect')
+      .attr('x', frameWidth + (size - frameWidth * 2) * 0.2)
+      .attr('y', logoY - footerHeight * 0.25)
+      .attr('width', (size - frameWidth * 2) * 0.6)
+      .attr('height', footerHeight * 0.5)
+      .attr('rx', 4)
+      .attr('ry', 4)
+      .attr('fill', 'rgba(47, 79, 79, 0.7)')
+      .attr('filter', 'drop-shadow(0px 1px 2px rgba(0,0,0,0.2))');
+      
+    // Centrar el logo con el texto
+    const logoX = footerTextX - logoSize * 0.6;
+    
+    // Crear un grupo para el logo y posicionarlo correctamente
+    const logoGroup = svg.append('g')
+      .attr('transform', `translate(${logoX}, ${logoY}) scale(${logoSize/50})`);
+    
+    // Dibujar el logo
+    logoGroup.append('circle')
+      .attr('cx', 25).attr('cy', 25).attr('r', 23)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.8)')
+      .attr('stroke-width', 2);
+    
+    logoGroup.append('ellipse')
+      .attr('cx', 25).attr('cy', 25)
+      .attr('rx', 23).attr('ry', 10)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.8)')
+      .attr('stroke-width', 1.5)
+      .attr('transform', 'rotate(30 25 25)');
+    
+    logoGroup.append('ellipse')
+      .attr('cx', 25).attr('cy', 25)
+      .attr('rx', 23).attr('ry', 10)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.8)')
+      .attr('stroke-width', 1.5)
+      .attr('transform', 'rotate(-30 25 25)');
 
-    const logoGroup = svg.append('g').attr('transform', `translate(${logoX}, ${logoY}) scale(${logoSize/50})`);
-    logoGroup.append('circle').attr('cx', 25).attr('cy', 25).attr('r', 23).attr('fill', 'none').attr('stroke', 'rgba(255,255,255,0.8)').attr('stroke-width', 2);
-    logoGroup.append('ellipse').attr('cx', 25).attr('cy', 25).attr('rx', 23).attr('ry', 10).attr('fill', 'none').attr('stroke', 'rgba(255,255,255,0.8)').attr('stroke-width', 1.5).attr('transform', 'rotate(30 25 25)');
-    logoGroup.append('ellipse').attr('cx', 25).attr('cy', 25).attr('rx', 23).attr('ry', 10).attr('fill', 'none').attr('stroke', 'rgba(255,255,255,0.8)').attr('stroke-width', 1.5).attr('transform', 'rotate(-30 25 25)');
-
+    // Texto "TU IKIGAI" y frase
+    const titleX = footerTextX + logoSize * 0.8;
+    
     svg.append('text')
-      .attr('x', footerTextX)
-      .attr('y', logoY + 2)
-      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-      .attr('fill', 'white').attr('font-size', footerHeight * 0.35)
-      .attr('font-weight', 'bold').attr('font-family', 'sans-serif')
+      .attr('x', titleX)
+      .attr('y', logoY - 5)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', 'white')
+      .attr('font-size', footerHeight * 0.35)
+      .attr('font-weight', 'bold')
+      .attr('font-family', 'sans-serif')
       .text("TU IKIGAI");
       
     svg.append('text')
-      .attr('x', footerTextX)
-      .attr('y', logoY + footerHeight * 0.35)
-      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-      .attr('fill', 'rgba(255,255,255,0.8)').attr('font-size', footerHeight * 0.22)
-      .attr('font-style', 'italic').attr('font-family', 'sans-serif')
+      .attr('x', titleX)
+      .attr('y', logoY + footerHeight * 0.2)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', 'rgba(255,255,255,0.8)')
+      .attr('font-size', footerHeight * 0.22)
+      .attr('font-style', 'italic')
+      .attr('font-family', 'sans-serif')
       .text('"La frase que representa tu propósito de vida"');
 
     // Dibujar los círculos principales
@@ -223,16 +269,16 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
       // Ajustes específicos para cada círculo
       switch(key) {
         case 'love': // Círculo superior (Amas)
-          posY = center.y - circleRadius * 0.1; // Mover ligeramente arriba del centro
+          posY = center.y - circleRadius * 0.05; // Ajuste fino para centrar mejor
           break;
         case 'talent': // Círculo izquierdo (Tienes)
           posX = center.x - circleRadius * 0.05; // Ajuste fino para centrar mejor
           break;
         case 'need': // Círculo derecho (Ofreces)
-          posX = center.x - circleRadius * 0.05; // Ajuste fino para centrar mejor
+          posX = center.x + circleRadius * 0.05; // Ajuste fino hacia la derecha para evitar solapamiento
           break;
         case 'payment': // Círculo inferior (Ganas)
-          posY = center.y + circleRadius * 0.1; // Mover ligeramente debajo del centro
+          posY = center.y + circleRadius * 0.05; // Ajuste fino para centrar mejor
           break;
       }
 
@@ -324,8 +370,8 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
             labelX = c.x - circleRadius + keyLabelRadius * 2.5;
             break;
           case 'need': // Derecha - Ofreces (problema previo)
-            // Mover más hacia el interior para evitar salir del círculo
-            labelX = c.x + circleRadius - keyLabelRadius * 3.5;
+            // Mover mucho más hacia el interior para asegurar que no toque el borde
+            labelX = c.x + circleRadius - keyLabelRadius * 4.5;
             break;
           case 'payment': // Inferior
             labelY = c.y + circleRadius - keyLabelRadius * 2.5;
