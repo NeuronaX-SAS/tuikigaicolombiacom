@@ -8,6 +8,7 @@ export const onGet: RequestHandler = async ({ json }) => {
 
 export const onPost: RequestHandler = async ({ request, json, url }) => {
   console.log(`\n--- API: /api/create-preference POST request received ---`);
+  console.log('Available env vars:', JSON.stringify(import.meta.env, null, 2));
   console.log(`Request URL: ${url.href}`);
 
   // Use environment variable for API key
