@@ -67,20 +67,20 @@ export default component$(() => {
             <h3 class="text-xl font-bold mb-4 text-tuikigai-teal">Legal</h3>
             <ul class="space-y-3">
               <li>
-                <a href={getAssetPath('documents/Política de Tratamiento de Datos Personales.pdf')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href="/privacidad/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Política de Tratamiento de Datos
                 </a>
               </li>
               <li>
-                <a href={getAssetPath('documents/Términos y Condiciones.pdf')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
+                <a href="/terminos/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center">
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
                   Términos y Condiciones
                 </a>
               </li>
             </ul>
             <p class="mt-6 text-sm text-gray-400 text-justify">
-              En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. Para ejercer sus derechos puede consultar en la{' '}<a href="https://www.sic.gov.co/tema/proteccion-de-datos-personales" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">Superintendencia de Industria y Comercio</a>.
+              En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. Para ejercer sus derechos puede consultar en la{' '}<a href="https://www.sic.gov.co/" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">Superintendencia de Industria y Comercio</a>.
             </p>
           </div>
           
