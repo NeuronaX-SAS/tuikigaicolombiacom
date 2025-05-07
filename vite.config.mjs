@@ -35,6 +35,12 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    ssr: (mode === 'production') ? {
+      input: 'src/entry.cloudflare-pages.tsx',
+      noExternal: true,
+    } : {
+    },
+
     build: {
       target: 'es2020',
       outDir: 'dist',
