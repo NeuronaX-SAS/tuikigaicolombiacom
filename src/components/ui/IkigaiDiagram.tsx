@@ -201,41 +201,56 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
             .text(text);
     });
 
+    // Tokenizar las respuestas
     const loveTokens = tokenizeText(responses.love);
     const talentTokens = tokenizeText(responses.talent);
     const needTokens = tokenizeText(responses.need);
     const paymentTokens = tokenizeText(responses.payment);
 
-    // Palabras del usuario dentro de los círculos
-    const placeWords = (words: string[], centerX: number, centerY: number, color: string, radius: number) => {
+    // Palabras del usuario dentro de los círculos (list layout)
+    const placeWordsList = (words: string[], center: {x: number, y: number}, key: string) => {
       if (words.length === 0) return;
-      const baseFontSize = adjustedDiagramSize * 0.035; // Aumentado para palabras del usuario
-      const fontSize = Math.max(baseFontSize * (1 - words.length / 15), baseFontSize * 0.6);
-      const angleStep = (Math.PI * 1.8) / Math.max(1, words.length -1); // Distribución más abierta
-      const startAngle = -Math.PI / 2 - (words.length > 1 ? (angleStep * (words.length -1))/2 : 0) ; // Centrar arco
-      const innerRadius = radius * 0.45;
-      const outerRadius = radius * 0.65; // Espacio para el texto principal
-
+      const fontSize = adjustedDiagramSize * 0.03; // Tamaño mayor y consistente
+      const lineHeight = fontSize * 1.3;
+      let x0 = center.x;
+      let y0 = center.y;
+      // Ajustar posición según sección
+      switch (key) {
+        case 'love':
+          y0 = center.y - circleRadius * 0.45;
+          break;
+        case 'talent':
+          x0 = center.x - circleRadius * 0.45;
+          y0 = center.y - ((words.length - 1) * lineHeight) / 2;
+          break;
+        case 'need':
+          x0 = center.x + circleRadius * 0.45;
+          y0 = center.y - ((words.length - 1) * lineHeight) / 2;
+          break;
+        case 'payment':
+          y0 = center.y + circleRadius * 0.45 - (words.length - 1) * lineHeight;
+          break;
+      }
+      // Renderizar cada palabra
       words.forEach((word, i) => {
-        const angle = startAngle + (i * angleStep);
-        const distance = innerRadius + (Math.random() * (outerRadius - innerRadius));
-        const x = centerX + Math.cos(angle) * distance;
-        const y = centerY + Math.sin(angle) * distance;
-        
         g.append('text')
-          .attr('x', x).attr('y', y)
-          .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-          .attr('fill', d3.rgb(color).darker(1.2).toString())
-          .attr('font-size', fontSize).attr('font-weight', 'normal').attr('font-family', 'sans-serif')
-          .attr('class', 'word-label').style('opacity', 0).text(word)
-          .transition().duration(500).delay(i * 70).style('opacity', 0.9);
+          .attr('x', x0)
+          .attr('y', y0 + i * lineHeight)
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.2).toString())
+          .attr('font-size', fontSize)
+          .attr('font-weight', '500')
+          .attr('font-family', 'sans-serif')
+          .text(word)
+          .style('opacity', 0)
+          .transition().duration(400).delay(i * 100).style('opacity', 1);
       });
     };
-
-    placeWords(loveTokens, centers.love.x, centers.love.y + circleRadius * 0.1, colors.love, circleRadius);
-    placeWords(talentTokens, centers.talent.x, centers.talent.y + circleRadius * 0.1, colors.talent, circleRadius);
-    placeWords(needTokens, centers.need.x, centers.need.y + circleRadius * 0.1, colors.need, circleRadius);
-    placeWords(paymentTokens, centers.payment.x, centers.payment.y + circleRadius * 0.1, colors.payment, circleRadius);
+    placeWordsList(loveTokens, centers.love, 'love');
+    placeWordsList(talentTokens, centers.talent, 'talent');
+    placeWordsList(needTokens, centers.need, 'need');
+    placeWordsList(paymentTokens, centers.payment, 'payment');
 
     // Key Labels (LOVE, TALENT, etc.) dentro de los círculos
     const keyLabelRadius = adjustedDiagramSize * 0.035;
@@ -313,7 +328,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
         ).join(' ')
     );
     if (centerIntersectionTokens.length > 0) {
-        placeWords(centerIntersectionTokens, centerX, centerY, intersectionColors.center, adjustedDiagramSize * 0.15);
+        placeWordsList(centerIntersectionTokens, { x: centerX, y: centerY }, 'center');
     }
   });
 
