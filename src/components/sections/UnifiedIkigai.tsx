@@ -186,7 +186,7 @@ export default component$(() => {
     }
 
     // Obtener el color seleccionado
-    const selectedColor = getSelectedColorName();
+    const selectedColor = await getSelectedColorName(); // Added await here
 
     // Guardar las respuestas en Firestore
     try {
