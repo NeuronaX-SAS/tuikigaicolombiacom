@@ -1,4 +1,4 @@
-import { component$, useVisibleTask$, useSignal } from '@builder.io/qwik';
+import { component$, useVisibleTask$, useSignal, useTask$ } from '@builder.io/qwik';
 import * as d3 from 'd3';
 
 // Interfaz para los props del componente
@@ -21,6 +21,7 @@ interface IkigaiDiagramProps {
 export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, userName, ref }) => {
   const diagramRef = useSignal<SVGSVGElement>();
   const containerRef = useSignal<HTMLDivElement>();
+  const previousResponses = useSignal<typeof responses>({ love: '', talent: '', need: '', payment: '' });
   
   // Colores para cada círculo del Ikigai (más suaves y translúcidos como en la nueva imagen)
   const colors = {
@@ -39,12 +40,23 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     center: '#1e3a8a'           // Dark Blue for IKIGAI text
   };
 
-  // Renderizar el diagrama cuando cambian las respuestas o el tamaño
-  useVisibleTask$(({ track }) => {
+  // Función para verificar si las respuestas han cambiado
+  useTask$(({ track }) => {
     track(() => responses);
-    track(() => convergenceIndex);
-    track(() => userName); // Seguir cambios en userName
+    // Si hay cambios significativos, actualizar el estado previo
+    if (
+      responses.love !== previousResponses.value.love ||
+      responses.talent !== previousResponses.value.talent ||
+      responses.need !== previousResponses.value.need ||
+      responses.payment !== previousResponses.value.payment
+    ) {
+      previousResponses.value = { ...responses };
+      renderDiagram();
+    }
+  });
 
+  // Función para renderizar el diagrama
+  const renderDiagram = () => {
     const svgElement = ref?.value || diagramRef.value;
     if (!svgElement) return;
 
@@ -196,105 +208,90 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const needResponses = processUserInputs(responses.need);
     const paymentResponses = processUserInputs(responses.payment);
 
-    // Renderizar respuestas del usuario dentro de los círculos
+    // Nueva función para renderizar respuestas con un mejor diseño
     const displayUserResponses = (items: string[], center: {x: number, y: number}, key: string) => {
       if (items.length === 0) return;
       
-      // Configuraciones específicas para cada círculo
-      let positionX = center.x;
-      let positionY = center.y;
-      const fontSize = finalDiagramSize * 0.026;
-      const lineHeight = fontSize * 1.3;
+      // Configuración general para todas las áreas
+      const fontSize = finalDiagramSize * 0.028;
+      const lineHeight = fontSize * 1.4;
       
-      // Calcular mejor posición según el área para evitar solapamientos
-      // y mantener el contenido dentro de cada círculo
-      const yOffset = items.length * lineHeight / 2;
+      // Calcular posición óptima según el área para centrar mejor
+      let posX = center.x;
+      let posY = center.y;
       
+      // Ajustes específicos para cada círculo
       switch(key) {
-        case 'love':
-          positionY = center.y - yOffset + circleRadius * 0.2;
+        case 'love': // Círculo superior (Amas)
+          posY = center.y - circleRadius * 0.1; // Mover ligeramente arriba del centro
           break;
-        case 'talent':
-          positionX = center.x - circleRadius * 0.15;
-          positionY = center.y - yOffset;
+        case 'talent': // Círculo izquierdo (Tienes)
+          posX = center.x - circleRadius * 0.05; // Ajuste fino para centrar mejor
           break;
-        case 'need':
-          positionX = center.x + circleRadius * 0.15;
-          positionY = center.y - yOffset;
+        case 'need': // Círculo derecho (Ofreces)
+          posX = center.x - circleRadius * 0.05; // Ajuste fino para centrar mejor
           break;
-        case 'payment':
-          positionY = center.y - yOffset - circleRadius * 0.2;
+        case 'payment': // Círculo inferior (Ganas)
+          posY = center.y + circleRadius * 0.1; // Mover ligeramente debajo del centro
           break;
       }
+
+      // Crear un contenedor que mantendrá el texto centrado
+      const textContainer = g.append('g')
+        .attr('transform', `translate(${posX}, ${posY})`);
       
-      // Calcular el ancho óptimo para cada área
-      let maxWidthPercent = 0;
-      switch(key) {
-        case 'love':
-        case 'payment':
-          maxWidthPercent = 0.65; // 65% del radio para áreas superior e inferior
-          break;
-        case 'talent':
-        case 'need':
-          maxWidthPercent = 0.6; // 60% del radio para áreas laterales
-          break;
-      }
-      
-      // Calcular el ancho basado en el texto y el área disponible
-      const maxWidth = Math.min(
-        circleRadius * maxWidthPercent * 2, // Limitar según el área disponible
-        Math.max(100, items.reduce((max, item) => Math.max(max, Math.min(item.length * fontSize * 0.5, circleRadius)), 0))
+      // Calcular dimensiones para el marco basado en el contenido
+      const maxLength = items.reduce((max, item) => Math.max(max, item.length), 0);
+      // Estimar ancho basado en longitud de texto y tamaño de fuente
+      const estimatedWidth = Math.min(
+        circleRadius * 1.4, // No exceder el 70% del diámetro
+        Math.max(maxLength * fontSize * 0.55, circleRadius * 0.5)
       );
       
-      // Ajustar el texto si es demasiado largo
-      const adjustedItems = items.map(item => {
-        // Estimar el número de caracteres que caben en el ancho disponible
-        const maxChars = Math.floor(maxWidth / (fontSize * 0.5));
-        if (item.length > maxChars) {
-          return item.substring(0, maxChars - 3) + '...';
-        }
-        return item;
-      });
+      // Altura basada en número de elementos
+      const containerHeight = items.length * lineHeight + 24; // Padding adicional
       
-      // Calcular la altura basada en el número de líneas
-      const padding = { x: 12, y: 8 };
-      const bgHeight = (items.length * lineHeight) + padding.y * 2;
-      
-      // Crear grupo para la respuesta
-      const responseGroup = g.append('g')
-        .attr('transform', `translate(${positionX}, ${positionY})`);
-      
-      // Fondo con mejor estilo visual
-      responseGroup.append('rect')
-        .attr('x', -maxWidth/2)
-        .attr('y', -bgHeight/2)
-        .attr('width', maxWidth)
-        .attr('height', bgHeight)
-        .attr('rx', 12)
-        .attr('ry', 12)
-        .attr('fill', 'rgba(255,255,255,0.9)')
-        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.5).toString())
+      // Crear fondo redondeado con mejor estilo visual
+      textContainer.append('rect')
+        .attr('x', -estimatedWidth/2)
+        .attr('y', -containerHeight/2)
+        .attr('width', estimatedWidth)
+        .attr('height', containerHeight)
+        .attr('rx', 14)
+        .attr('ry', 14)
+        .attr('fill', 'rgba(255,255,255,0.92)')
+        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.4).toString())
         .attr('stroke-width', 1.5)
-        .attr('filter', 'drop-shadow(0px 2px 3px rgba(0,0,0,0.12))');
+        .attr('filter', 'drop-shadow(0px 1px 3px rgba(0,0,0,0.15))');
       
-      // Renderizar las respuestas línea por línea con mejor estilo
-      adjustedItems.forEach((item, i) => {
-        const textY = (i - (items.length - 1) / 2) * lineHeight;
-        responseGroup.append('text')
+      // Calcular posición vertical inicial
+      const startY = -((items.length - 1) * lineHeight) / 2;
+      
+      // Renderizar cada elemento con mejor estilo
+      items.forEach((item, i) => {
+        // Controlar longitud máxima
+        let displayText = item;
+        if (item.length > 25) {
+          displayText = item.substring(0, 22) + '...';
+        }
+        
+        textContainer.append('text')
           .attr('x', 0)
-          .attr('y', textY)
+          .attr('y', startY + i * lineHeight)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
-          .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.7).toString()) // Color más oscuro para mejor contraste
+          .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.5).toString())
           .attr('font-size', fontSize)
           .attr('font-weight', '600')
           .attr('font-family', 'sans-serif')
-          .text(item)
+          .attr('letter-spacing', '0.2px')
+          .text(displayText)
           .style('opacity', 0)
-          .transition().duration(300).delay(i * 100).style('opacity', 1);
+          .transition().duration(250).delay(i * 80).style('opacity', 1);
       });
     };
     
+    // Renderizar respuestas en sus respectivas áreas
     displayUserResponses(loveResponses, centers.love, 'love');
     displayUserResponses(talentResponses, centers.talent, 'talent');
     displayUserResponses(needResponses, centers.need, 'need');
@@ -315,20 +312,32 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     Object.keys(centers).forEach(key => {
         const c = centers[key as keyof typeof centers];
         let labelX = c.x, labelY = c.y;
-        // Ajustar posición para asegurar que estén dentro de los círculos
-        const distanceFromEdge = circleRadius * 0.25; // 25% del radio desde el borde
         
-        if (key === 'love') labelY = c.y - circleRadius + distanceFromEdge;
-        if (key === 'talent') labelX = c.x - circleRadius + distanceFromEdge;
-        if (key === 'need') labelX = c.x + circleRadius - distanceFromEdge;
-        if (key === 'payment') labelY = c.y + circleRadius - distanceFromEdge;
+        // Ajustar posición para asegurar que estén dentro de los círculos
+        // Usar una posición relativa al radio con offset adicional para garantizar 
+        // que quede completamente dentro del círculo
+        switch(key) {
+          case 'love': // Superior
+            labelY = c.y - circleRadius + keyLabelRadius * 2.5;
+            break;
+          case 'talent': // Izquierda
+            labelX = c.x - circleRadius + keyLabelRadius * 2.5;
+            break;
+          case 'need': // Derecha - Ofreces (problema previo)
+            // Mover más hacia el interior para evitar salir del círculo
+            labelX = c.x + circleRadius - keyLabelRadius * 3.5;
+            break;
+          case 'payment': // Inferior
+            labelY = c.y + circleRadius - keyLabelRadius * 2.5;
+            break;
+        }
 
         // Fondo del círculo y borde
         g.append('circle')
             .attr('cx', labelX).attr('cy', labelY).attr('r', keyLabelRadius)
-            .attr('fill', '#f1f5f9') // Light gray background
+            .attr('fill', '#f8fafc') // Color más claro para mejor contraste
             .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.7).toString())
-            .attr('stroke-width', 1);
+            .attr('stroke-width', 1.5);
         
         // Texto de la etiqueta
         g.append('text')
@@ -381,6 +390,15 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
         .attr('r', Math.max(ikigaiBBox.width, ikigaiBBox.height) * 0.75) // Radio basado en el tamaño del texto
         .attr('fill', 'rgba(255,255,255,0.9)') // Fondo blanco más opaco
         .attr('stroke', d3.rgb(intersectionColors.center).darker(0.5).toString()).attr('stroke-width', 1.5);
+  };
+
+  // Renderizar el diagrama cuando cambian las respuestas o el tamaño
+  useVisibleTask$(({ track }) => {
+    track(() => responses);
+    track(() => convergenceIndex);
+    track(() => userName); // Seguir cambios en userName
+    
+    renderDiagram();
   });
 
   return (
