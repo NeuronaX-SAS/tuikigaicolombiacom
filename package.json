@@ -4,11 +4,10 @@
   "description": "Aplicación de una sola página para explorar el concepto Ikigai",
   "scripts": {
     "build": "vite build",
-    "build.server.cf": "vite build -c adapters/cloudflare-pages/vite.config.ts",
-    "build.cloudflare": "npm run clean && npm run build && npm run build.server.cf && npm run copy:assets",
+    "build.cloudflare": "npm run clean && npm run build && npm run copy:assets",
     "copy:assets": "node scripts/copy-assets.js",
     "deploy": "npm run build.cloudflare && wrangler pages deploy ./dist --project-name tuikigaicolombiacom",
-    "dev": "vite --force",
+    "dev": "vite --force --mode development",
     "preview": "vite preview",
     "serve": "wrangler pages dev ./dist --compatibility-flags=nodejs_als",
     "clean": "rimraf dist .turbo node_modules/.vite"
