@@ -39,7 +39,7 @@ export default component$(() => {
   const hasNavigatedToNext = useStore({ love: false, talent: false, need: false, payment: false });
 
   // Estado para las imágenes de ikigai prediseñadas
-  const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Base_Verde.png'));
+  const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Verde.png'));
   const showStaticIkigai = useSignal(true);
 
   // Contadores de caracteres
@@ -185,9 +185,8 @@ export default component$(() => {
       return;
     }
 
-    // Obtener el color seleccionado usando la función normal (no reactiva)
+    // Obtener el color seleccionado
     const selectedColor = getSelectedColorName();
-    console.log('[handleSubmit] Color seleccionado:', selectedColor);
 
     // Guardar las respuestas en Firestore
     try {
@@ -211,14 +210,11 @@ export default component$(() => {
         money: state.ikigaiResponses.payment // Mapear payment a money para Firestore
       };
       
-      // Crear un objeto nuevo con los datos base más el color
-      const dataToSave = {
-        ...firestoreData,
-        colorSeleccionado: selectedColor
-      };
-      
-      // Guardar en Firestore
-      await firestoreService.saveIkigaiResponses(dataToSave);
+      // Usar Object.assign para añadir propiedades extra que el linter no conoce
+      // de manera segura
+      await firestoreService.saveIkigaiResponses(Object.assign(firestoreData, {
+        colorSeleccionado: selectedColor // Añadir el color seleccionado a Firestore
+      }));
       
       // Mantener la llamada API original si es necesaria
       try {
@@ -564,29 +560,24 @@ export default component$(() => {
 
   // Definición de plantillas de ikigai
   const ikigaiTemplates = [
-    { id: 'gris', name: 'Gris', color: 'bg-gray-400', path: getAssetPath('images/IKIGAI_Base_Gris.png') },
-    { id: 'naranja', name: 'Naranja', color: 'bg-orange-500', path: getAssetPath('images/IKIGAI_Base_Naranja.png') },
-    { id: 'rojo', name: 'Rojo', color: 'bg-red-600', path: getAssetPath('images/IKIGAI_Base_Roja.png') },
-    { id: 'verde', name: 'Verde', color: 'bg-green-600', path: getAssetPath('images/IKIGAI_Base_Verde.png') },
-    { id: 'azul', name: 'Azul', color: 'bg-blue-600', path: getAssetPath('images/IKIGAI_EJEMPLO_Azul.png') },
-    { id: 'morado', name: 'Morado', color: 'bg-purple-600', path: getAssetPath('images/IKIGAI_EJEMPLO_Morado.png') },
-    { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/Amarillo ikigai_00.png') }
+    { id: 'gris', name: 'Gris', color: 'bg-gray-400', path: getAssetPath('images/IKIGAI_Gris.png') },
+    { id: 'naranja', name: 'Naranja', color: 'bg-orange-500', path: getAssetPath('images/IKIGAI_Naranja.png') },
+    { id: 'rojo', name: 'Rojo', color: 'bg-red-600', path: getAssetPath('images/IKIGAI_Rojo.png') },
+    { id: 'verde', name: 'Verde', color: 'bg-green-600', path: getAssetPath('images/IKIGAI_Verde.png') },
+    { id: 'azul', name: 'Azul', color: 'bg-blue-600', path: getAssetPath('images/IKIGAI_Azul.png') },
+    { id: 'morado', name: 'Morado', color: 'bg-purple-600', path: getAssetPath('images/IKIGAI_Morado.png') },
+    { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/IKIGAI_Amarillo.png') }
   ];
 
-  // Función para obtener el color seleccionado en español - definida sin $ para evitar problemas
-  const getSelectedColorName = () => {
-    const currentImage = selectedIkigaiImage.value;
-    
-    // Buscar el template que coincide con la imagen seleccionada
-    for (const template of ikigaiTemplates) {
-      if (template.path === currentImage) {
-        return template.name;
-      }
-    }
-    
-    // Valor por defecto si no se encuentra coincidencia
-    return 'Verde';
-  };
+  // Función para obtener el color seleccionado en español - definida con $ para reactivity
+  const getSelectedColorName = $(() => {
+    // Encuentra el template cuyo path coincide con la imagen seleccionada
+    const selectedTemplate = ikigaiTemplates.find(
+      template => template.path === selectedIkigaiImage.value
+    );
+    // Retorna el nombre en español o un valor por defecto
+    return selectedTemplate ? selectedTemplate.name : 'Verde';
+  });
 
   // Función para manejar la selección de color
   const handleColorSelection = $((templatePath: string) => {
