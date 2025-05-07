@@ -96,7 +96,7 @@ export default component$(() => {
   // Mensajes motivacionales mejorados
   const motivationalMessages = {
     love: [
-      "¿Qué actividades amas, te apasionan, te hacen perder la noción del tiempo o disfrutabas profundamente de niño? (escribe varias palabras o frases)",
+      "Nuestro propósito es ayudarte a encontrar tú propósito.",
       //"¿Qué te apasiona tanto que podrías hacerlo durante horas?",
       //"¿Qué actividades te dan energía en lugar de agotarte?"
     ],
