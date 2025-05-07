@@ -48,16 +48,15 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const svgElement = ref?.value || diagramRef.value;
     if (!svgElement) return;
 
-    // Función para tokenizar y limpiar texto
-    const tokenizeText = (text: string) => {
-      if (!text) return [];
-      const stopWords = ['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'o', 'pero', 'porque', 'como', 'que', 'para', 'por', 'a', 'ante', 'bajo', 'con', 'contra', 'de', 'desde', 'en', 'entre', 'hacia', 'hasta', 'según', 'sin', 'sobre', 'tras'];
-      let tokens = text
-        .toLowerCase()
-        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-        .split(/\s+/)
-        .filter(word => word.length > 2 && !stopWords.includes(word));
-      return tokens.slice(0, 8); // Limitar a 8 palabras para mejor visualización
+    // Función para procesar texto de respuestas del usuario
+    const processUserInputs = (text: string) => {
+      if (!text || text.trim() === '') return [];
+      
+      // Dividir el texto en líneas o frases más cortas para mejor visualización
+      return text.split(/[,;.]/)
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .slice(0, 5); // Limitar a 5 elementos para evitar sobrecarga visual
     };
 
     const findIntersections = (setA: string[], setB: string[]) => {
@@ -116,24 +115,33 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
         .attr('offset', '0%')
         .attr('stop-color', d3.rgb(color).brighter(0.3).toString())
         .attr('stop-opacity', '0.5'); // Opacidad base para el centro
-
+        
       gradient.append('stop')
         .attr('offset', '100%')
         .attr('stop-color', d3.rgb(color).darker(0.3).toString())
         .attr('stop-opacity', '0.3'); // Opacidad en los bordes
     });
     
+    // Centrando mejor el diagrama en el área disponible
+    const contentWidth = size - (frameWidth * 2);
+    const contentHeight = size - (frameWidth * 2) - headerHeight - footerHeight;
+    const diagramAreaWidth = contentWidth * 0.9; // Usar 90% del ancho disponible
+    const diagramAreaHeight = contentHeight * 0.9; // Usar 90% del alto disponible
+    const finalDiagramSize = Math.min(diagramAreaWidth, diagramAreaHeight);
+    
+    const centerX = contentWidth / 2;
+    const centerY = (contentHeight / 2) + headerHeight;
+    
     const g = svg.append('g')
-      .attr('transform', `translate(${margin + frameWidth}, ${margin + frameWidth + headerHeight})`);
+      .attr('transform', `translate(${frameWidth + centerX - finalDiagramSize/2}, ${frameWidth + centerY - finalDiagramSize/2})`);
 
-    const adjustedDiagramSize = size - (frameWidth * 2) - margin * 2 - headerHeight - footerHeight;
-    const circleRadius = adjustedDiagramSize * 0.38;
+    const circleRadius = finalDiagramSize * 0.38;
 
     const centers = {
-      love: { x: adjustedDiagramSize / 2, y: adjustedDiagramSize * 0.25 }, // Ajuste para más espacio arriba
-      talent: { x: adjustedDiagramSize * 0.25, y: adjustedDiagramSize / 2 },
-      need: { x: adjustedDiagramSize * 0.75, y: adjustedDiagramSize / 2 },
-      payment: { x: adjustedDiagramSize / 2, y: adjustedDiagramSize * 0.75 }
+      love: { x: finalDiagramSize / 2, y: finalDiagramSize * 0.25 },
+      talent: { x: finalDiagramSize * 0.25, y: finalDiagramSize / 2 },
+      need: { x: finalDiagramSize * 0.75, y: finalDiagramSize / 2 },
+      payment: { x: finalDiagramSize / 2, y: finalDiagramSize * 0.75 }
     };
     
     // Texto del nombre del usuario en la cabecera
@@ -189,72 +197,103 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     };
 
     Object.entries(mainLabelsData).forEach(([key, { text, color }]) => {
-        g.append('text')
-            .attr('x', centers[key as keyof typeof centers].x)
-            .attr('y', centers[key as keyof typeof centers].y - circleRadius * 0.55) // Posición ajustada dentro del círculo
-            .attr('text-anchor', 'middle')
-            .attr('dominant-baseline', 'middle')
-            .attr('font-size', adjustedDiagramSize * 0.032) // Tamaño de fuente aumentado
-            .attr('fill', d3.rgb(color).darker(1.5).toString()) // Color más oscuro para contraste
-            .attr('font-weight', '500')
-            .attr('font-family', 'sans-serif')
-            .text(text);
+      g.append('text')
+        .attr('x', centers[key as keyof typeof centers].x)
+        .attr('y', centers[key as keyof typeof centers].y - circleRadius * 0.55) // Posición ajustada dentro del círculo
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('font-size', finalDiagramSize * 0.032) // Tamaño de fuente aumentado
+        .attr('fill', d3.rgb(color).darker(1.5).toString()) // Color más oscuro para contraste
+        .attr('font-weight', '500')
+        .attr('font-family', 'sans-serif')
+        .text(text);
     });
 
-    // Tokenizar las respuestas
-    const loveTokens = tokenizeText(responses.love);
-    const talentTokens = tokenizeText(responses.talent);
-    const needTokens = tokenizeText(responses.need);
-    const paymentTokens = tokenizeText(responses.payment);
+    // Procesar las respuestas
+    const loveResponses = processUserInputs(responses.love);
+    const talentResponses = processUserInputs(responses.talent);
+    const needResponses = processUserInputs(responses.need);
+    const paymentResponses = processUserInputs(responses.payment);
 
-    // Palabras del usuario dentro de los círculos (list layout)
-    const placeWordsList = (words: string[], center: {x: number, y: number}, key: string) => {
-      if (words.length === 0) return;
-      const fontSize = adjustedDiagramSize * 0.03; // Tamaño mayor y consistente
-      const lineHeight = fontSize * 1.3;
-      let x0 = center.x;
-      let y0 = center.y;
-      // Ajustar posición según sección
-      switch (key) {
+    // Renderizar respuestas del usuario dentro de los círculos
+    const displayUserResponses = (items: string[], center: {x: number, y: number}, key: string) => {
+      if (items.length === 0) return;
+      
+      // Ajustes específicos para cada círculo
+      let startY = 0;
+      const fontSize = finalDiagramSize * 0.028; // Tamaño de fuente adecuado
+      const lineHeight = fontSize * 1.5; // Espacio entre líneas
+      
+      // Calcular posición inicial según el área
+      switch(key) {
         case 'love':
-          y0 = center.y - circleRadius * 0.45;
+          startY = center.y - circleRadius * 0.25; // En área superior
           break;
         case 'talent':
-          x0 = center.x - circleRadius * 0.45;
-          y0 = center.y - ((words.length - 1) * lineHeight) / 2;
+          startY = center.y - (items.length * lineHeight) / 2; // Centrado vertical
           break;
         case 'need':
-          x0 = center.x + circleRadius * 0.45;
-          y0 = center.y - ((words.length - 1) * lineHeight) / 2;
+          startY = center.y - (items.length * lineHeight) / 2; // Centrado vertical
           break;
         case 'payment':
-          y0 = center.y + circleRadius * 0.45 - (words.length - 1) * lineHeight;
+          startY = center.y + circleRadius * 0.05; // En área inferior
           break;
       }
-      // Renderizar cada palabra
-      words.forEach((word, i) => {
-        g.append('text')
-          .attr('x', x0)
-          .attr('y', y0 + i * lineHeight)
+      
+      // Crear un grupo para las respuestas
+      const responsesGroup = g.append('g')
+        .attr('transform', `translate(${center.x}, ${startY})`);
+      
+      // Crear un rectángulo con bordes redondeados como fondo
+      const padding = { x: 15, y: 10 };
+      const bgHeight = (items.length * lineHeight) + padding.y * 2;
+      const maxWidth = items.reduce((max, item) => Math.max(max, item.length * fontSize * 0.6), 0) + padding.x * 2;
+      
+      responsesGroup.append('rect')
+        .attr('x', -maxWidth/2)
+        .attr('y', -padding.y)
+        .attr('width', maxWidth)
+        .attr('height', bgHeight)
+        .attr('rx', 10)
+        .attr('ry', 10)
+        .attr('fill', 'rgba(255,255,255,0.7)')
+        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.7).toString())
+        .attr('stroke-width', 1);
+      
+      // Renderizar cada respuesta
+      items.forEach((item, i) => {
+        responsesGroup.append('text')
+          .attr('x', 0)
+          .attr('y', i * lineHeight + lineHeight/2)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
-          .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.2).toString())
+          .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.5).toString())
           .attr('font-size', fontSize)
-          .attr('font-weight', '500')
+          .attr('font-weight', '600')
           .attr('font-family', 'sans-serif')
-          .text(word)
+          .text(item)
           .style('opacity', 0)
-          .transition().duration(400).delay(i * 100).style('opacity', 1);
+          .transition().duration(300).delay(i * 100).style('opacity', 1);
       });
     };
-    placeWordsList(loveTokens, centers.love, 'love');
-    placeWordsList(talentTokens, centers.talent, 'talent');
-    placeWordsList(needTokens, centers.need, 'need');
-    placeWordsList(paymentTokens, centers.payment, 'payment');
+    
+    displayUserResponses(loveResponses, centers.love, 'love');
+    displayUserResponses(talentResponses, centers.talent, 'talent');
+    displayUserResponses(needResponses, centers.need, 'need');
+    displayUserResponses(paymentResponses, centers.payment, 'payment');
 
-    // Key Labels (LOVE, TALENT, etc.) dentro de los círculos
-    const keyLabelRadius = adjustedDiagramSize * 0.035;
-    const keyLabelFontSize = adjustedDiagramSize * 0.022;
+    // Key Labels (Amas, Tienes, etc.) dentro de pequeños círculos
+    const keyLabelRadius = finalDiagramSize * 0.035;
+    const keyLabelFontSize = finalDiagramSize * 0.022;
+    
+    // Nuevos textos para las etiquetas según lo solicitado
+    const keyLabels = {
+      love: "Amas",
+      talent: "Tienes",
+      need: "Ofreces",
+      payment: "Ganas"
+    };
+    
     Object.keys(centers).forEach(key => {
         const c = centers[key as keyof typeof centers];
         let labelX = c.x, labelY = c.y;
@@ -274,16 +313,16 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
             .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
             .attr('font-size', keyLabelFontSize).attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1).toString())
             .attr('font-weight', 'bold').attr('font-family', 'sans-serif')
-            .text(key.toUpperCase());
+            .text(keyLabels[key as keyof typeof keyLabels]);
     });
 
     // Etiquetas de Intersección (PASIÓN, MISIÓN, etc.)
     const addIntersectionLabel = (text: string, x: number, y: number, colorValue: string, angle: number = 0) => {
       const group = g.append('g').attr('transform', `translate(${x},${y}) rotate(${angle})`);
-      const padding = { x: adjustedDiagramSize * 0.015, y: adjustedDiagramSize * 0.008 }; // Padding para el fondo
+      const padding = { x: finalDiagramSize * 0.015, y: finalDiagramSize * 0.008 }; // Padding para el fondo
       const textElement = group.append('text')
         .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-        .attr('fill', colorValue).attr('font-size', adjustedDiagramSize * 0.028)
+        .attr('fill', colorValue).attr('font-size', finalDiagramSize * 0.028)
         .attr('font-weight', '600').attr('font-family', 'sans-serif').text(text);
       
       const bbox = (textElement.node() as SVGTextElement).getBBox();
@@ -292,7 +331,7 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
         .attr('y', bbox.y - padding.y)
         .attr('width', bbox.width + padding.x * 2)
         .attr('height', bbox.height + padding.y * 2)
-        .attr('rx', adjustedDiagramSize * 0.01).attr('ry', adjustedDiagramSize * 0.01)
+        .attr('rx', finalDiagramSize * 0.01).attr('ry', finalDiagramSize * 0.01)
         .attr('fill', 'rgba(255,255,255,0.85)') // Fondo blanco translúcido
         .attr('stroke', d3.rgb(colorValue).darker(0.3).toString()).attr('stroke-width', 0.5);
     };
@@ -307,29 +346,18 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     intersectionLabels.forEach(({ text, pos, color, angle }) => addIntersectionLabel(text, pos.x, pos.y, color, angle));
 
     // Etiqueta central "IKIGAI"
-    const centerX = adjustedDiagramSize / 2;
-    const centerY = adjustedDiagramSize / 2;
-    const ikigaiLabelGroup = g.append('g').attr('transform', `translate(${centerX},${centerY})`);
+    const ikigaiCenterX = finalDiagramSize / 2;
+    const ikigaiCenterY = finalDiagramSize / 2;
+    const ikigaiLabelGroup = g.append('g').attr('transform', `translate(${ikigaiCenterX},${ikigaiCenterY})`);
     const ikigaiText = ikigaiLabelGroup.append('text')
         .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-        .attr('fill', intersectionColors.center).attr('font-size', adjustedDiagramSize * 0.045)
+        .attr('fill', intersectionColors.center).attr('font-size', finalDiagramSize * 0.045)
         .attr('font-weight', 'bold').attr('font-family', 'sans-serif').text("IKIGAI");
     const ikigaiBBox = (ikigaiText.node() as SVGTextElement).getBBox();
     ikigaiLabelGroup.insert('circle', 'text')
         .attr('r', Math.max(ikigaiBBox.width, ikigaiBBox.height) * 0.75) // Radio basado en el tamaño del texto
         .attr('fill', 'rgba(255,255,255,0.9)') // Fondo blanco más opaco
         .attr('stroke', d3.rgb(intersectionColors.center).darker(0.5).toString()).attr('stroke-width', 1.5);
-
-    // Palabras de la intersección central (si existen)
-    const centerIntersectionTokens = tokenizeText(
-        findIntersections(
-            findIntersections(loveTokens, talentTokens),
-            findIntersections(needTokens, paymentTokens)
-        ).join(' ')
-    );
-    if (centerIntersectionTokens.length > 0) {
-        placeWordsList(centerIntersectionTokens, { x: centerX, y: centerY }, 'center');
-    }
   });
 
   return (
@@ -338,7 +366,6 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
         ref={ref || diagramRef} 
         class="w-full h-full relative z-10"
       ></svg>
-      {/* Estilos CSS para animaciones podrían ir aquí si son necesarios */}
     </div>
   );
 });
