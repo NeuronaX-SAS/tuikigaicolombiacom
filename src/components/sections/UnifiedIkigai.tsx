@@ -71,6 +71,9 @@ export default component$(() => {
     company: '',
   });
 
+  // TUIKIGAI slogan for the external banner
+  const slogan = "Nuestro propósito es ayudarte a encontrar tú propósito.";
+
   // Calcular progreso total y actualizar el diagrama
   useVisibleTask$(({ track }) => {
     track(() => [
@@ -96,7 +99,7 @@ export default component$(() => {
   // Mensajes motivacionales mejorados
   const motivationalMessages = {
     love: [
-      "Nuestro propósito es ayudarte a encontrar tú propósito.",
+      "¿Qué actividades amas, te apasionan, te hacen perder la noción del tiempo o disfrutabas profundamente de niño? (escribe varias palabras o frases)",
       //"¿Qué te apasiona tanto que podrías hacerlo durante horas?",
       //"¿Qué actividades te dan energía en lugar de agotarte?"
     ],
@@ -511,7 +514,7 @@ export default component$(() => {
   const getMotivationalMessage = () => {
     const progress = state.progress;
     if (progress < 30) {
-      return motivationalMessages.love[currentMotivationalIndex.love];
+      return slogan;
     } else if (progress < 60) {
       return motivationalMessages.talent[currentMotivationalIndex.talent];
     } else if (progress < 90) {
@@ -608,7 +611,7 @@ export default component$(() => {
         {/* Mensaje motivacional basado en el progreso */}
         <div class="text-center mb-8 mt-4">
           <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10">
-            {getMotivationalMessage()}
+            {slogan}
           </p>
         </div>
 
