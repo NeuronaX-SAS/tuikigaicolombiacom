@@ -48,10 +48,10 @@ export default component$(() => {
               Las políticas de reembolso se aplicarán de acuerdo con las leyes colombianas de protección al consumidor.
             </p>
             
-            <h2 class="text-xl font-semibold mb-4 mt-8">6. Privacidad</h2>
+            <h2 class="text-xl font-semibold mb-4 mt-8">6. Tratamiento de Datos</h2>
             <p>
-              Su uso de nuestro servicio está sujeto a nuestra Política de Privacidad. Al utilizar TUIKIGAI, 
-              usted consiente la recopilación y uso de la información como se describe en nuestra Política de Privacidad.
+              Su uso de nuestro servicio está sujeto a nuestra Política de Tratamiento de Datos. Al utilizar TUIKIGAI, 
+              usted consiente la recopilación y uso de la información como se describe en nuestra Política de Tratamiento de Datos.
             </p>
             
             <h2 class="text-xl font-semibold mb-4 mt-8">7. Modificaciones</h2>

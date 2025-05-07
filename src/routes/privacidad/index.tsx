@@ -100,7 +100,7 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Política de Privacidad - TUIKIGAI',
+  title: 'Política de Tratamiento de Datos - TUIKIGAI',
   meta: [
     {
       name: 'description',

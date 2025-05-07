@@ -40,7 +40,7 @@ export default component$(() => {
               <h2 class="text-3xl font-bold">TUIKIGAI</h2>
             </div>
             
-            <p class="text-gray-300 mb-8 max-w-md">
+            <p class="text-gray-300 mb-8 max-w-md text-justify">
               La herramienta definitiva para descubrir tu propósito de vida
               a través del concepto japonés del Ikigai. Encuentra el equilibrio
               perfecto entre tu pasión, talento, propósito y sustento.
@@ -55,8 +55,8 @@ export default component$(() => {
                 class="w-10 h-10 rounded-full bg-white bg-opacity-10 flex items-center justify-center hover:bg-tuikigai-teal transition-colors duration-300"
                 aria-label="WhatsApp"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.52 3.48A11.815 11.815 0 0 0 12 0C5.373 0 0 5.373 0 12c0 2.134.56 4.128 1.56 5.8l-1.62 6.1 6.1-1.62a11.955 11.955 0 0 0 8.493 3.507c6.627 0 12-5.373 12-12s-5.373-12-12-12zM7.24 16.88c-.31-.13-1.83-1.08-2.14-1.2-.3-.12-.53-.19-.77.07-.22.25-.85.93-1.05 1.12-.2.2-.37.24-.68.08-.3-.16-1.12-.42-2.08-1.6-.56-.68-.94-1.48-1.06-1.68-.12-.19-.01-.29.09-.38.1-.1.23-.26.34-.4.1-.14.13-.25.2-.38.06-.13.03-.25-.02-.34-.05-.09-.76-1.87-.76-1.87-.1-.24-.15-.26-.35-.27-.19-.01-.35-.01-.51-.01-.16 0-.28.02-.41.32-.13.31-.52 1.04-.52 2.49 0 1.45.54 2.88.63 3.07 0 .17 1.71 2.75 4.14 4.4 2.39 1.65 2.83 1.68 3.44 1.57.61-.11 1.85-.75 2.11-1.48.26-.72.26-1.34.18-1.47-.07-.12-.22-.2-.45-.36z" />
                 </svg>
               </a>
             </div>
@@ -71,7 +71,7 @@ export default component$(() => {
               <li>
                 <a href={getAssetPath('documents/Política de Tratamiento de Datos Personales.pdf')} class="text-gray-300 hover:text-white transition-colors duration-200 flex items-center" download>
                   <span class="w-1.5 h-1.5 rounded-full bg-tuikigai-teal mr-2"></span>
-                  Política de Privacidad
+                  Política de Tratamiento de Datos
                 </a>
               </li>
               <li>
@@ -82,11 +82,7 @@ export default component$(() => {
               </li>
             </ul>
             <p class="mt-6 text-sm text-gray-400">
-            En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. 
-            Para ejercer sus derechos puede consulta en la 
-              <a href="https://www.sic.gov.co/tema/proteccion-de-datos-personales" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">
-                 Superintendencia de Industria y Comercio
-              </a>.
+              En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. Para ejercer sus derechos puede consultar en la{' '}<a href="https://www.sic.gov.co/tema/proteccion-de-datos-personales" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">Superintendencia de Industria y Comercio</a>.
             </p>
           </div>
           

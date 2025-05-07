@@ -152,7 +152,7 @@ export default component$(() => {
   // Función para manejar el envío del formulario
   const handleSubmit = $(async () => {
     if (!state.acceptTerms || !state.acceptPrivacy) {
-      alert('Por favor acepta los términos y condiciones y la política de privacidad para continuar.');
+      alert('Por favor acepta los términos y condiciones y la política de tratamiento de datos para continuar.');
       return;
     }
 
@@ -715,7 +715,7 @@ export default component$(() => {
                       />
                     </div>
                     <label for="privacy" class="ml-3 text-sm text-slate-600">
-                      Acepto la <a href="/documents/Política de Tratamiento de Datos Personales.pdf" download class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">política de privacidad</a>
+                      Acepto la <a href="/documents/Política de Tratamiento de Datos Personales.pdf" download class="text-teal-600 hover:text-teal-500 transition-colors duration-200 underline">política de tratamiento de datos</a>
                     </label>
                   </div>
                 </div>
