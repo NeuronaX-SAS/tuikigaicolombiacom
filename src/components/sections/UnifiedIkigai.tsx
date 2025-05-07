@@ -185,8 +185,9 @@ export default component$(() => {
       return;
     }
 
-    // Obtener el color seleccionado
-    const selectedColor = await getSelectedColorName(); // Correctly await the QRL execution
+    // Obtener el color seleccionado usando la función normal (no reactiva)
+    const selectedColor = getSelectedColorName();
+    console.log('[handleSubmit] Color seleccionado:', selectedColor);
 
     // Guardar las respuestas en Firestore
     try {
@@ -210,11 +211,14 @@ export default component$(() => {
         money: state.ikigaiResponses.payment // Mapear payment a money para Firestore
       };
       
-      // Usar Object.assign para añadir propiedades extra que el linter no conoce
-      // de manera segura
-      await firestoreService.saveIkigaiResponses(Object.assign(firestoreData, {
-        colorSeleccionado: selectedColor // Añadir el color seleccionado a Firestore
-      }));
+      // Crear un objeto nuevo con los datos base más el color
+      const dataToSave = {
+        ...firestoreData,
+        colorSeleccionado: selectedColor
+      };
+      
+      // Guardar en Firestore
+      await firestoreService.saveIkigaiResponses(dataToSave);
       
       // Mantener la llamada API original si es necesaria
       try {
@@ -569,15 +573,20 @@ export default component$(() => {
     { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/Amarillo ikigai_00.png') }
   ];
 
-  // Función para obtener el color seleccionado en español - definida con $ para reactivity
-  const getSelectedColorName = $(() => {
-    // Encuentra el template cuyo path coincide con la imagen seleccionada
-    const selectedTemplate = ikigaiTemplates.find(
-      template => template.path === selectedIkigaiImage.value
-    );
-    // Retorna el nombre en español o un valor por defecto
-    return selectedTemplate ? selectedTemplate.name : 'Verde';
-  });
+  // Función para obtener el color seleccionado en español - definida sin $ para evitar problemas
+  const getSelectedColorName = () => {
+    const currentImage = selectedIkigaiImage.value;
+    
+    // Buscar el template que coincide con la imagen seleccionada
+    for (const template of ikigaiTemplates) {
+      if (template.path === currentImage) {
+        return template.name;
+      }
+    }
+    
+    // Valor por defecto si no se encuentra coincidencia
+    return 'Verde';
+  };
 
   // Función para manejar la selección de color
   const handleColorSelection = $((templatePath: string) => {
