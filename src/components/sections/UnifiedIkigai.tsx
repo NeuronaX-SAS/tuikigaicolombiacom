@@ -660,17 +660,17 @@ export default component$(() => {
         </div>
 
         {/* Mensaje motivacional basado en el progreso */}
-        <div class="text-center mb-8 mt-4">
-          <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10 flex items-center justify-center">
+        <div class="text-center mb-8 mt-4 relative">
+          <div class="flex items-center justify-center space-x-3">
             {/* Tooltip izquierdo - ¿Qué es el Ikigai? */}
-            <div class="relative mr-2">
+            <div class="relative">
               <button 
                 onClick$={() => toggleTooltip('ikigai')}
-                class="w-6 h-6 rounded-full bg-white/80 text-teal-500 border border-teal-200 flex items-center justify-center hover:bg-teal-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-300"
+                class="w-8 h-8 rounded-full bg-white shadow-md text-teal-500 border border-teal-300 flex items-center justify-center hover:bg-teal-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-300"
                 aria-label="¿Qué es el Ikigai?"
                 title="¿Qué es el Ikigai?"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </button>
@@ -685,17 +685,19 @@ export default component$(() => {
               )}
             </div>
             
-            {slogan}
+            <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10 px-2 max-w-xl">
+              {slogan}
+            </p>
             
             {/* Tooltip derecho - ¿Qué hacemos en tu Ikigai? */}
-            <div class="relative ml-2">
+            <div class="relative">
               <button 
                 onClick$={() => toggleTooltip('tuikigai')}
-                class="w-6 h-6 rounded-full bg-white/80 text-blue-500 border border-blue-200 flex items-center justify-center hover:bg-blue-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                class="w-8 h-8 rounded-full bg-white shadow-md text-blue-500 border border-blue-300 flex items-center justify-center hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300"
                 aria-label="¿Qué hacemos en tu Ikigai?"
                 title="¿Qué hacemos en tu Ikigai?"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </button>
@@ -709,7 +711,7 @@ export default component$(() => {
                 </div>
               )}
             </div>
-          </p>
+          </div>
         </div>
 
         {/* Grid principal con layout adaptable - estilo zen */}
