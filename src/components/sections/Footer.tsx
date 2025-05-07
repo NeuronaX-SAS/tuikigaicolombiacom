@@ -79,7 +79,7 @@ export default component$(() => {
                 </a>
               </li>
             </ul>
-            <p class="mt-6 text-sm text-gray-400">
+            <p class="mt-6 text-sm text-gray-400 text-justify">
               En TUIKIGAI cumplimos con las normas de protección de datos personales y protección al consumidor. Para ejercer sus derechos puede consultar en la{' '}<a href="https://www.sic.gov.co/tema/proteccion-de-datos-personales" target="_blank" rel="noopener noreferrer" class="text-tuikigai-teal hover:underline">Superintendencia de Industria y Comercio</a>.
             </p>
           </div>
