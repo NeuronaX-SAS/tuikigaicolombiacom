@@ -2,7 +2,6 @@ import './src/utils/jsonPatch.js';
 import { defineConfig, loadEnv } from 'vite';
 import { qwikVite } from '@builder.io/qwik/optimizer';
 import { qwikCity } from '@builder.io/qwik-city/vite';
-import { cloudflarePagesAdapter } from '@builder.io/qwik-city/adapters/cloudflare-pages/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,10 +11,8 @@ export default defineConfig(({ mode }) => {
   return {
     base: '/',
     plugins: [
+      qwikVite(), 
       qwikCity(),
-      qwikVite(),
-      (mode === 'production') && cloudflarePagesAdapter({
-      }),
     ].filter(Boolean), 
 
     server: {
@@ -31,20 +28,13 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@utils': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'src/utils'),
-        '~': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'src'),
       },
-    },
-
-    ssr: (mode === 'production') ? {
-      input: 'src/entry.cloudflare-pages.tsx',
-      noExternal: true,
-    } : {
     },
 
     build: {
       target: 'es2020',
       outDir: 'dist',
-      cssCodeSplit: false,
+      cssCodeSplit: false, // Temporarily disable CSS code splitting
       minify: 'terser',
       terserOptions: {
         compress: {
@@ -53,9 +43,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       reportCompressedSize: true,
-      chunkSizeWarningLimit: 1000,
-      rollupOptions: {
-      }
+      chunkSizeWarningLimit: 1000
     },
     
     esbuild: {

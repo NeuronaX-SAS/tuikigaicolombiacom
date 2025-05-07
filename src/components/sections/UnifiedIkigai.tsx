@@ -608,7 +608,7 @@ export default component$(() => {
         {/* Mensaje motivacional basado en el progreso */}
         <div class="text-center mb-8 mt-4">
           <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10">
-            Nuestro propósito es ayudarte a encontrar tú propósito
+            {getMotivationalMessage()}
           </p>
         </div>
 
