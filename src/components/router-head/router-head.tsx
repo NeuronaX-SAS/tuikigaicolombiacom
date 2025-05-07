@@ -25,10 +25,9 @@ export const RouterHead = component$(() => {
         <link key={l.key} {...l} />
       ))}
 
-      {head.styles.map((s) => {
-        const { dangerouslySetInnerHTML: _ignored, ...otherProps } = s.props || {};
-        return <style key={s.key} {...otherProps} dangerouslySetInnerHTML={s.style} />;
-      })}
+      {head.styles.map((s) => (
+        <style key={s.key} {...s.props} dangerouslySetInnerHTML={s.style} />
+      ))}
 
       {/* Add any other global head elements here */}
       <script src="https://sdk.mercadopago.com/js/v2" async></script>
