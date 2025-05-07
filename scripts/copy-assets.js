@@ -79,6 +79,18 @@ function main() {
   }
   
   console.log('Asset copy process completed!');
+  
+  // Patch the Cloudflare Pages Functions worker import path
+  const workerPath = path.join(distDir, '_worker.js');
+  if (fs.existsSync(workerPath)) {
+    let workerCode = fs.readFileSync(workerPath, 'utf8');
+    workerCode = workerCode.replace(
+      'from "entry.cloudflare-pages"',
+      'from "./entry.cloudflare-pages.js"'
+    );
+    fs.writeFileSync(workerPath, workerCode);
+    console.log(`Patched worker import in ${workerPath}`);
+  }
 }
 
 main();
