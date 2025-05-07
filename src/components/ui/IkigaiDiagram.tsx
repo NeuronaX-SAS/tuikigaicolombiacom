@@ -168,11 +168,9 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const logoSize = footerHeight * 0.4;
     // Centrado del footer
     const footerTextX = size / 2;
-    
-    // Reposicionando el logo para que esté centrado correctamente
     const logoY = size - frameWidth - footerHeight/2;
     
-    // Añadir fondo para el texto del footer (opcional, para mejor separación)
+    // Fondo para el footer (opcional)
     svg.append('rect')
       .attr('x', frameWidth + (size - frameWidth * 2) * 0.2)
       .attr('y', logoY - footerHeight * 0.25)
@@ -182,11 +180,11 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
       .attr('ry', 4)
       .attr('fill', 'rgba(47, 79, 79, 0.7)')
       .attr('filter', 'drop-shadow(0px 1px 2px rgba(0,0,0,0.2))');
-      
-    // Centrar el logo con el texto
-    const logoX = footerTextX - logoSize * 0.6;
     
-    // Crear un grupo para el logo y posicionarlo correctamente
+    // Logo posicionado a la izquierda del texto
+    const logoX = footerTextX - logoSize * 2;
+    
+    // Crear grupo para el logo
     const logoGroup = svg.append('g')
       .attr('transform', `translate(${logoX}, ${logoY}) scale(${logoSize/50})`);
     
@@ -213,11 +211,9 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
       .attr('stroke-width', 1.5)
       .attr('transform', 'rotate(-30 25 25)');
 
-    // Texto "TU IKIGAI" y frase
-    const titleX = footerTextX + logoSize * 0.8;
-    
+    // Texto TUIKIGAI (sin espacio) y frase
     svg.append('text')
-      .attr('x', titleX)
+      .attr('x', footerTextX)
       .attr('y', logoY - 5)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
@@ -225,10 +221,10 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
       .attr('font-size', footerHeight * 0.35)
       .attr('font-weight', 'bold')
       .attr('font-family', 'sans-serif')
-      .text("TU IKIGAI");
+      .text("TUIKIGAI");
       
     svg.append('text')
-      .attr('x', titleX)
+      .attr('x', footerTextX)
       .attr('y', logoY + footerHeight * 0.2)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
@@ -254,86 +250,115 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     const needResponses = processUserInputs(responses.need);
     const paymentResponses = processUserInputs(responses.payment);
 
-    // Nueva función para renderizar respuestas con un mejor diseño
+    // Nueva función para renderizar respuestas con diseño mejorado y etiquetas dentro
     const displayUserResponses = (items: string[], center: {x: number, y: number}, key: string) => {
       if (items.length === 0) return;
       
-      // Configuración general para todas las áreas
+      // Configuración general
       const fontSize = finalDiagramSize * 0.028;
       const lineHeight = fontSize * 1.4;
       
-      // Calcular posición óptima según el área para centrar mejor
+      // Calcular posición óptima
       let posX = center.x;
       let posY = center.y;
+      
+      // Etiquetas para cada círculo - se mostrarán como título del contenedor
+      const labels = {
+        love: "Amas",
+        talent: "Tienes",
+        need: "Ofreces",
+        payment: "Ganas"
+      };
       
       // Ajustes específicos para cada círculo
       switch(key) {
         case 'love': // Círculo superior (Amas)
-          posY = center.y - circleRadius * 0.05; // Ajuste fino para centrar mejor
+          posY = center.y - circleRadius * 0.1;
           break;
         case 'talent': // Círculo izquierdo (Tienes)
-          posX = center.x - circleRadius * 0.05; // Ajuste fino para centrar mejor
+          posX = center.x - circleRadius * 0.05;
           break;
         case 'need': // Círculo derecho (Ofreces)
-          posX = center.x + circleRadius * 0.05; // Ajuste fino hacia la derecha para evitar solapamiento
+          posX = center.x + circleRadius * 0.05;
           break;
         case 'payment': // Círculo inferior (Ganas)
-          posY = center.y + circleRadius * 0.05; // Ajuste fino para centrar mejor
+          posY = center.y + circleRadius * 0.1;
           break;
       }
 
-      // Crear un contenedor que mantendrá el texto centrado
-      const textContainer = g.append('g')
+      // Crear contenedor para respuestas
+      const responseContainer = g.append('g')
         .attr('transform', `translate(${posX}, ${posY})`);
       
-      // Calcular dimensiones para el marco basado en el contenido
+      // Calcular dimensiones optimizadas
       const maxLength = items.reduce((max, item) => Math.max(max, item.length), 0);
-      // Estimar ancho basado en longitud de texto y tamaño de fuente
       const estimatedWidth = Math.min(
-        circleRadius * 1.4, // No exceder el 70% del diámetro
-        Math.max(maxLength * fontSize * 0.55, circleRadius * 0.5)
+        circleRadius * 1.6, // Usar más espacio ahora que eliminamos los mini-círculos
+        Math.max(maxLength * fontSize * 0.55, circleRadius * 0.6)
       );
       
-      // Altura basada en número de elementos
-      const containerHeight = items.length * lineHeight + 24; // Padding adicional
+      // Añadir altura para la etiqueta
+      const containerHeight = items.length * lineHeight + 40; // Más espacio para etiqueta superior
       
-      // Crear fondo redondeado con mejor estilo visual
-      textContainer.append('rect')
+      // Fondo redondeado con mejor estilo
+      responseContainer.append('rect')
         .attr('x', -estimatedWidth/2)
         .attr('y', -containerHeight/2)
         .attr('width', estimatedWidth)
         .attr('height', containerHeight)
-        .attr('rx', 14)
-        .attr('ry', 14)
-        .attr('fill', 'rgba(255,255,255,0.92)')
-        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.4).toString())
+        .attr('rx', 16)
+        .attr('ry', 16)
+        .attr('fill', 'rgba(255,255,255,0.94)')
+        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.3).toString())
         .attr('stroke-width', 1.5)
-        .attr('filter', 'drop-shadow(0px 1px 3px rgba(0,0,0,0.15))');
+        .attr('filter', 'drop-shadow(0px 2px 4px rgba(0,0,0,0.15))');
       
-      // Calcular posición vertical inicial
-      const startY = -((items.length - 1) * lineHeight) / 2;
+      // Añadir etiqueta superior dentro del contenedor
+      responseContainer.append('text')
+        .attr('x', 0)
+        .attr('y', -containerHeight/2 + 22) // Posicionar cerca del borde superior
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.2).toString())
+        .attr('font-size', fontSize * 1.05) // Ligeramente más grande
+        .attr('font-weight', 'bold')
+        .attr('font-family', 'sans-serif')
+        .text(labels[key as keyof typeof labels]);
       
-      // Renderizar cada elemento con mejor estilo
+      // Línea divisoria sutil
+      responseContainer.append('line')
+        .attr('x1', -estimatedWidth/2 + 16)
+        .attr('y1', -containerHeight/2 + 32) 
+        .attr('x2', estimatedWidth/2 - 16)
+        .attr('y2', -containerHeight/2 + 32)
+        .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.3).toString())
+        .attr('stroke-width', 0.8)
+        .attr('opacity', 0.8);
+      
+      // Calcular posición inicial para los elementos, ajustando por la etiqueta añadida
+      const startY = -((items.length - 1) * lineHeight) / 2 + 15;
+      
+      // Renderizar respuestas con estilo mejorado
       items.forEach((item, i) => {
         // Controlar longitud máxima
         let displayText = item;
-        if (item.length > 25) {
-          displayText = item.substring(0, 22) + '...';
+        if (item.length > 30) {
+          displayText = item.substring(0, 27) + '...';
         }
         
-        textContainer.append('text')
+        responseContainer.append('text')
           .attr('x', 0)
           .attr('y', startY + i * lineHeight)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
           .attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1.5).toString())
           .attr('font-size', fontSize)
-          .attr('font-weight', '600')
+          .attr('font-weight', '500')
           .attr('font-family', 'sans-serif')
           .attr('letter-spacing', '0.2px')
           .text(displayText)
           .style('opacity', 0)
-          .transition().duration(250).delay(i * 80).style('opacity', 1);
+          .transition().duration(250).delay(i * 70).style('opacity', 1);
       });
     };
     
@@ -342,57 +367,6 @@ export default component$<IkigaiDiagramProps>(({ responses, convergenceIndex, us
     displayUserResponses(talentResponses, centers.talent, 'talent');
     displayUserResponses(needResponses, centers.need, 'need');
     displayUserResponses(paymentResponses, centers.payment, 'payment');
-
-    // Key Labels (Amas, Tienes, etc.) dentro de pequeños círculos
-    const keyLabelRadius = finalDiagramSize * 0.035;
-    const keyLabelFontSize = finalDiagramSize * 0.022;
-    
-    // Nuevos textos para las etiquetas según lo solicitado
-    const keyLabels = {
-      love: "Amas",
-      talent: "Tienes",
-      need: "Ofreces",
-      payment: "Ganas"
-    };
-    
-    Object.keys(centers).forEach(key => {
-        const c = centers[key as keyof typeof centers];
-        let labelX = c.x, labelY = c.y;
-        
-        // Ajustar posición para asegurar que estén dentro de los círculos
-        // Usar una posición relativa al radio con offset adicional para garantizar 
-        // que quede completamente dentro del círculo
-        switch(key) {
-          case 'love': // Superior
-            labelY = c.y - circleRadius + keyLabelRadius * 2.5;
-            break;
-          case 'talent': // Izquierda
-            labelX = c.x - circleRadius + keyLabelRadius * 2.5;
-            break;
-          case 'need': // Derecha - Ofreces (problema previo)
-            // Mover mucho más hacia el interior para asegurar que no toque el borde
-            labelX = c.x + circleRadius - keyLabelRadius * 4.5;
-            break;
-          case 'payment': // Inferior
-            labelY = c.y + circleRadius - keyLabelRadius * 2.5;
-            break;
-        }
-
-        // Fondo del círculo y borde
-        g.append('circle')
-            .attr('cx', labelX).attr('cy', labelY).attr('r', keyLabelRadius)
-            .attr('fill', '#f8fafc') // Color más claro para mejor contraste
-            .attr('stroke', d3.rgb(colors[key as keyof typeof colors]).darker(0.7).toString())
-            .attr('stroke-width', 1.5);
-        
-        // Texto de la etiqueta
-        g.append('text')
-            .attr('x', labelX).attr('y', labelY)
-            .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
-            .attr('font-size', keyLabelFontSize).attr('fill', d3.rgb(colors[key as keyof typeof colors]).darker(1).toString())
-            .attr('font-weight', 'bold').attr('font-family', 'sans-serif')
-            .text(keyLabels[key as keyof typeof keyLabels]);
-    });
 
     // Etiquetas de Intersección (PASIÓN, MISIÓN, etc.)
     const addIntersectionLabel = (text: string, x: number, y: number, colorValue: string, angle: number = 0) => {
