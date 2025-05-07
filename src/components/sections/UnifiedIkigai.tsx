@@ -50,6 +50,7 @@ export default component$(() => {
   const showPaymentModal = useSignal(false);
   const paymentStep = useSignal('details'); 
   const isProcessingPayment = useSignal(false);
+  const isSubmitting = useSignal(false); // New state to track form submission loading state
   const paymentError = useSignal('');
 
   // State for purchase data
@@ -73,6 +74,21 @@ export default component$(() => {
 
   // TUIKIGAI slogan for the external banner
   const slogan = "Nuestro propósito es ayudarte a encontrar tú propósito.";
+  
+  // Estado para controlar la visibilidad de los tooltips informativos
+  const showTooltipIkigai = useSignal(false);
+  const showTooltipTuIkigai = useSignal(false);
+
+  // Función para alternar la visibilidad de los tooltips
+  const toggleTooltip = $((tooltipType: 'ikigai' | 'tuikigai') => {
+    if (tooltipType === 'ikigai') {
+      showTooltipIkigai.value = !showTooltipIkigai.value;
+      showTooltipTuIkigai.value = false; // Cerrar el otro tooltip
+    } else {
+      showTooltipTuIkigai.value = !showTooltipTuIkigai.value;
+      showTooltipIkigai.value = false; // Cerrar el otro tooltip
+    }
+  });
 
   // Calcular progreso total y actualizar el diagrama
   useVisibleTask$(({ track }) => {
@@ -151,16 +167,28 @@ export default component$(() => {
 
   // Función para manejar el envío del formulario
   const handleSubmit = $(async () => {
+    // Prevent multiple submissions
+    if (isSubmitting.value) {
+      return;
+    }
+    
+    isSubmitting.value = true; // Set loading state to true
+    
     if (!state.acceptTerms || !state.acceptPrivacy) {
       alert('Por favor acepta los términos y condiciones y la política de tratamiento de datos para continuar.');
+      isSubmitting.value = false; // Reset loading state
       return;
     }
 
     const hasResponses = Object.values(state.ikigaiResponses).some(response => response.trim().length > 0);
     if (!hasResponses) {
       alert('Por favor, completa al menos una de las preguntas del Ikigai para continuar.');
+      isSubmitting.value = false; // Reset loading state
       return;
     }
+
+    // Obtener el color seleccionado
+    const selectedColor = getSelectedColorName();
 
     // Guardar las respuestas en Firestore
     try {
@@ -169,19 +197,26 @@ export default component$(() => {
         love: state.ikigaiResponses.love,
         talent: state.ikigaiResponses.talent,
         need: state.ikigaiResponses.need,
-        payment: state.ikigaiResponses.payment, 
+        payment: state.ikigaiResponses.payment,
+        colorSeleccionado: selectedColor, // Añadir el color seleccionado
         timestamp: new Date().toISOString()
       };
       console.log('[handleSubmit] Intentando guardar respuestas del Ikigai:', ikigaiData);
       
-      // Guardar en Firestore
-      await firestoreService.saveIkigaiResponses({
+      // Guardar en Firestore con los datos disponibles
+      const firestoreData = {
         userName: state.userName,
         love: state.ikigaiResponses.love,
         talent: state.ikigaiResponses.talent,
         need: state.ikigaiResponses.need,
-        money: state.ikigaiResponses.payment // Mapear payment a money para Firestore
-      });
+        money: state.ikigaiResponses.payment, // Mapear payment a money para Firestore
+      };
+      
+      // Usar Object.assign para añadir propiedades extra que el linter no conoce
+      // de manera segura
+      await firestoreService.saveIkigaiResponses(Object.assign(firestoreData, {
+        colorSeleccionado: selectedColor // Añadir el color seleccionado a Firestore
+      }));
       
       // Mantener la llamada API original si es necesaria
       try {
@@ -220,11 +255,12 @@ export default component$(() => {
       }
     } catch (error) {
       console.error('[handleSubmit] Error preparando datos para guardar:', error);
+    } finally {
+      // Mostrar el modal de compra (incluso si falló el guardado inicial, según la lógica actual)
+      console.log('[handleSubmit] Mostrando modal de compra.');
+      showPurchaseModal.value = true;
+      isSubmitting.value = false; // Reset loading state
     }
-
-    // Mostrar el modal de compra (incluso si falló el guardado inicial, según la lógica actual)
-    console.log('[handleSubmit] Mostrando modal de compra.');
-    showPurchaseModal.value = true;
   });
 
   // Cambiar el mensaje motivacional
@@ -535,6 +571,21 @@ export default component$(() => {
     { id: 'amarillo', name: 'Amarillo', color: 'bg-yellow-500', path: getAssetPath('images/Amarillo ikigai_00.png') }
   ];
 
+  // Función para obtener el color seleccionado en español
+  const getSelectedColorName = () => {
+    // Encuentra el template cuyo path coincide con la imagen seleccionada
+    const selectedTemplate = ikigaiTemplates.find(
+      template => template.path === selectedIkigaiImage.value
+    );
+    // Retorna el nombre en español o un valor por defecto
+    return selectedTemplate ? selectedTemplate.name : 'Verde';
+  };
+
+  // Función para manejar la selección de color
+  const handleColorSelection = $((templatePath: string) => {
+    selectedIkigaiImage.value = templatePath;
+  });
+
   return (
     <section class="min-h-screen w-full flex flex-col items-center justify-start relative overflow-hidden bg-black">
       {/* Efectos de fondo premium mejorados */}
@@ -610,8 +661,54 @@ export default component$(() => {
 
         {/* Mensaje motivacional basado en el progreso */}
         <div class="text-center mb-8 mt-4">
-          <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10">
+          <p class="text-slate-600 text-sm md:text-base font-medium leading-relaxed transition-all duration-500 relative z-10 flex items-center justify-center">
+            {/* Tooltip izquierdo - ¿Qué es el Ikigai? */}
+            <div class="relative mr-2">
+              <button 
+                onClick$={() => toggleTooltip('ikigai')}
+                class="w-6 h-6 rounded-full bg-white/80 text-teal-500 border border-teal-200 flex items-center justify-center hover:bg-teal-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-300"
+                aria-label="¿Qué es el Ikigai?"
+                title="¿Qué es el Ikigai?"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              
+              {/* Contenido del tooltip */}
+              {showTooltipIkigai.value && (
+                <div class="absolute left-0 bottom-full mb-2 w-64 bg-white rounded-lg shadow-lg p-4 border border-slate-200 transform transition-opacity animate-fade-in z-20">
+                  <div class="absolute bottom-0 left-3 transform translate-y-1/2 rotate-45 w-3 h-3 bg-white border-r border-b border-slate-200"></div>
+                  <h4 class="font-medium text-sm text-slate-800 mb-1">¿Qué es el Ikigai?</h4>
+                  <p class="text-xs text-slate-600">Es la razón de ser en la vida, tu propósito por el cual te levantas todos los días y le das significado a tus acciones.</p>
+                </div>
+              )}
+            </div>
+            
             {slogan}
+            
+            {/* Tooltip derecho - ¿Qué hacemos en tu Ikigai? */}
+            <div class="relative ml-2">
+              <button 
+                onClick$={() => toggleTooltip('tuikigai')}
+                class="w-6 h-6 rounded-full bg-white/80 text-blue-500 border border-blue-200 flex items-center justify-center hover:bg-blue-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                aria-label="¿Qué hacemos en tu Ikigai?"
+                title="¿Qué hacemos en tu Ikigai?"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              
+              {/* Contenido del tooltip */}
+              {showTooltipTuIkigai.value && (
+                <div class="absolute right-0 bottom-full mb-2 w-72 bg-white rounded-lg shadow-lg p-4 border border-slate-200 transform transition-opacity animate-fade-in z-20">
+                  <div class="absolute bottom-0 right-3 transform translate-y-1/2 rotate-45 w-3 h-3 bg-white border-r border-b border-slate-200"></div>
+                  <h4 class="font-medium text-sm text-slate-800 mb-1">¿Qué hacemos en tu Ikigai?</h4>
+                  <p class="text-xs text-slate-600">Todos te dicen que debes tener un propósito pero no te dicen cómo construirlo. En TuIkigai te ayudamos a resolverlo, encontrando la conexión vital entre lo que amas, en lo que eres bueno, lo que el mundo necesita y tu sustento económico.</p>
+                </div>
+              )}
+            </div>
           </p>
         </div>
 
@@ -729,14 +826,26 @@ export default component$(() => {
                   ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                   : 'bg-gradient-to-r from-teal-400 to-blue-400 text-white transform hover:translate-y-[-2px]'
                 }`}
-                disabled={state.progress < 70}
+                disabled={state.progress < 70 || isSubmitting.value}
               >
                 <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-teal-500 to-blue-500 opacity-0 group-hover:opacity-80 transition-opacity duration-500"></span>
                 <span class="relative flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11H10z" />
-                  </svg>
-                  {state.progress < 70 ? 'Completa tu Ikigai para continuar' : 'Descubre tu Ikigai'}
+                  {isSubmitting.value ? (
+                    <>
+                      <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Procesando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11H10z" />
+                      </svg>
+                      {state.progress < 70 ? 'Completa tu Ikigai para continuar' : 'Descubre tu Ikigai'}
+                    </>
+                  )}
                 </span>
               </button>
             </div>
@@ -777,7 +886,7 @@ export default component$(() => {
                     {ikigaiTemplates.map((template) => (
                       <button 
                         key={template.id}
-                        onClick$={() => selectedIkigaiImage.value = template.path}
+                        onClick$={() => handleColorSelection(template.path)}
                         class={`w-8 h-8 rounded-full ${template.color} ${selectedIkigaiImage.value === template.path ? 'ring-2 ring-offset-2 ring-slate-500' : 'hover:opacity-80'} transition-all`}
                         aria-label={`IKIGAI ${template.name}`}
                         title={`IKIGAI ${template.name}`}
