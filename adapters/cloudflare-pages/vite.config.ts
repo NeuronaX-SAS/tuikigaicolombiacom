@@ -9,7 +9,8 @@ export default extendConfig(baseConfig, () => {
       rollupOptions: {
         input: ["src/entry.cloudflare-pages.tsx", "@qwik-city-plan"],
       },
-      outDir: "../../dist", // Output to the main dist directory
+      outDir: "dist", // Output to the main dist directory
+      emptyOutDir: false, // preserve existing dist content from client build
     },
     plugins: [
       cloudflarePagesAdapter({
