@@ -862,46 +862,65 @@ export default component$(() => {
             {/* Columna derecha para el diagrama Ikigai */}
             <div class="xl:sticky xl:top-8">
               <div class="bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:border-slate-300 overflow-hidden">
-                
                 <div class="aspect-square w-full">
-                  {!showStaticIkigai.value ? (
-                    <IkigaiDiagram
-                      responses={state.ikigaiResponses}
-                      convergenceIndex={state.convergenceIndex}
-                      ref={svgRef}
-                    />
-                  ) : (
-                    <div class="w-full h-full relative">
-                      {/* Display selected static ikigai image */}
-                      {selectedIkigaiImage.value ? (
-                        <img 
-                          src={selectedIkigaiImage.value} 
-                          alt="IKIGAI Plantilla" 
-                          class="w-full h-full object-contain"
+                  <div class="w-full h-full relative">
+                    {showStaticIkigai.value ? (
+                      <img 
+                        src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')} 
+                        alt="IKIGAI Plantilla" 
+                        class="w-full h-full object-contain" 
+                      />
+                    ) : (
+                      <div class="w-full h-full p-4">
+                        <IkigaiDiagram 
+                          responses={state.ikigaiResponses} 
+                          convergenceIndex={state.convergenceIndex} 
+                          ref={svgRef}
                         />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div class="p-4 border-t border-slate-200">
+                  <div class="flex justify-between items-center mb-3">
+                    <p class="text-xs text-slate-500">
+                      {showStaticIkigai.value ? "Selecciona un color" : "Ikigai en Tiempo Real"}
+                    </p>
+                    <button 
+                      onClick$={() => showStaticIkigai.value = !showStaticIkigai.value}
+                      class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-md transition-all flex items-center"
+                    >
+                      {showStaticIkigai.value ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Ver en Tiempo Real
+                        </>
                       ) : (
-                        <div class="w-full h-full flex items-center justify-center text-slate-400 font-medium">
-                          Selecciona un color
-                        </div>
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                          </svg>
+                          Ver Colores
+                        </>
                       )}
+                    </button>
+                  </div>
+                  
+                  {showStaticIkigai.value && (
+                    <div class="flex justify-center space-x-3">
+                      {ikigaiTemplates.map((template) => (
+                        <button 
+                          key={template.id}
+                          onClick$={() => handleColorSelection(template.path)}
+                          class={`w-8 h-8 rounded-full ${template.color} ${selectedIkigaiImage.value === template.path ? 'ring-2 ring-offset-2 ring-slate-500' : 'hover:opacity-80'} transition-all`}
+                          aria-label={`IKIGAI ${template.name}`}
+                          title={`IKIGAI ${template.name}`}
+                        ></button>
+                      ))}
                     </div>
                   )}
-                </div>
-
-                {/* Color selector buttons for static ikigai - Siempre visible */}
-                <div class="p-4 border-t border-slate-200">
-                  <p class="text-xs text-slate-500 mb-3 text-center">Selecciona un color</p>
-                  <div class="flex justify-center space-x-3">
-                    {ikigaiTemplates.map((template) => (
-                      <button 
-                        key={template.id}
-                        onClick$={() => handleColorSelection(template.path)}
-                        class={`w-8 h-8 rounded-full ${template.color} ${selectedIkigaiImage.value === template.path ? 'ring-2 ring-offset-2 ring-slate-500' : 'hover:opacity-80'} transition-all`}
-                        aria-label={`IKIGAI ${template.name}`}
-                        title={`IKIGAI ${template.name}`}
-                      ></button>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
