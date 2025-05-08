@@ -865,15 +865,16 @@ export default component$(() => {
                 <div class="aspect-square w-full">
                   <div class="w-full h-full relative">
                     {showStaticIkigai.value ? (
-                      <img 
-                        src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')} 
-                        alt="IKIGAI Plantilla" 
-                        class="w-full h-full object-contain" 
+                      <img
+                        key="static-ikigai"
+                        src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')}
+                        alt="IKIGAI Plantilla"
+                        class="w-full h-full object-contain"
                       />
                     ) : (
-                      <div class="w-full h-full p-4">
-                        <IkigaiDiagram 
-                          responses={state.ikigaiResponses} 
+                      <div key="dynamic-ikigai" class="w-full h-full p-4">
+                        <IkigaiDiagram
+                          responses={state.ikigaiResponses}
                           convergenceIndex={state.convergenceIndex}
                           userName={state.userName}
                           ref={svgRef}
