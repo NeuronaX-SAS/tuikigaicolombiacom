@@ -1024,7 +1024,7 @@ export default component$(() => {
                             
                             .ikigai-talent {
                               top: 50%;
-                              left: 0%;
+                              right: 0%;
                               transform: translateY(-50%);
                               background: #10bec5;
                               opacity: 0.5;
@@ -1032,7 +1032,7 @@ export default component$(() => {
                             
                             .ikigai-need {
                               top: 50%;
-                              right: 0%;
+                              left: 0%;
                               transform: translateY(-50%);
                               background: #18709c;
                               opacity: 0.5;
