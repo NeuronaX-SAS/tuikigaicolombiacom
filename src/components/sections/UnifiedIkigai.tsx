@@ -895,65 +895,329 @@ export default component$(() => {
                     
                     {/* Vista dinámica del IKIGAI - IMPLEMENTATION FALLBACK */}
                     {!showStaticIkigai.value && (
-                      <div class="w-full h-full p-4 bg-white overflow-auto" key={forceRender.value}>
+                      <div class="w-full h-full p-4 bg-white overflow-hidden" key={forceRender.value}>
                         <div class="flex flex-col h-full">
-                          <div class="text-center py-2 bg-teal-800 text-white font-bold rounded-t-lg">
+                          <div class="text-center py-2 bg-teal-800 text-white font-bold rounded-t-lg shadow-sm">
                             {state.userName || "Tu nombre aquí"}
                           </div>
                           
-                          {/* Contenedor principal del diagrama */}
-                          <div class="flex-1 grid grid-cols-2 gap-2 p-4 border border-gray-200 bg-gray-50 rounded-b-lg">
-                            {/* Sección Lo que amas */}
-                            <div class="bg-blue-100 rounded-lg p-3 shadow-sm">
-                              <h3 class="text-center font-bold text-blue-800 mb-2 text-sm">Lo que amas</h3>
-                              <div class="border-t border-blue-300 pt-2">
-                                <p class="text-sm text-blue-700 text-center">
-                                  {state.ikigaiResponses.love || "Sin datos"}
-                                </p>
+                          {/* Contenedor circular del diagrama */}
+                          <div class="flex-1 relative p-6 border border-gray-200 bg-slate-50 rounded-b-lg overflow-hidden">
+                            {/* Círculos base con gradientes sutiles */}
+                            <div class="ikigai-diagram-container relative w-full h-full">
+                              {/* LO QUE AMAS - Círculo superior */}
+                              <div class="ikigai-circle ikigai-love absolute rounded-full 
+                                          bg-gradient-to-b from-blue-300/80 to-blue-400/80 
+                                          flex flex-col items-center justify-center shadow-lg border border-blue-200 
+                                          text-center p-5 z-10">
+                                <h3 class="text-white font-bold text-sm md:text-base mb-2 drop-shadow-md">
+                                  LO QUE AMAS
+                                </h3>
+                                <div class="max-w-[90%] max-h-[60%] overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
+                                  <p class="text-white text-xs md:text-sm font-medium">
+                                    {state.ikigaiResponses.love || "Sin datos"}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                            
-                            {/* Sección En lo que eres bueno */}
-                            <div class="bg-green-100 rounded-lg p-3 shadow-sm">
-                              <h3 class="text-center font-bold text-green-800 mb-2 text-sm">En lo que eres bueno</h3>
-                              <div class="border-t border-green-300 pt-2">
-                                <p class="text-sm text-green-700 text-center">
-                                  {state.ikigaiResponses.talent || "Sin datos"}
-                                </p>
+                              
+                              {/* EN LO QUE ERES BUENO - Círculo izquierdo */}
+                              <div class="ikigai-circle ikigai-talent absolute rounded-full 
+                                          bg-gradient-to-br from-green-300/80 to-green-400/80 
+                                          flex flex-col items-center justify-center shadow-lg border border-green-200 
+                                          text-center p-5 z-10">
+                                <h3 class="text-white font-bold text-sm md:text-base mb-2 drop-shadow-md">
+                                  EN LO QUE ERES<br/>BUENO
+                                </h3>
+                                <div class="max-w-[90%] max-h-[60%] overflow-auto scrollbar-thin scrollbar-thumb-green-700 scrollbar-track-green-200">
+                                  <p class="text-white text-xs md:text-sm font-medium">
+                                    {state.ikigaiResponses.talent || "Sin datos"}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                            
-                            {/* Sección Lo que el mundo necesita */}
-                            <div class="bg-purple-100 rounded-lg p-3 shadow-sm">
-                              <h3 class="text-center font-bold text-purple-800 mb-2 text-sm">Lo que el mundo necesita</h3>
-                              <div class="border-t border-purple-300 pt-2">
-                                <p class="text-sm text-purple-700 text-center">
-                                  {state.ikigaiResponses.need || "Sin datos"}
-                                </p>
+                              
+                              {/* LO QUE EL MUNDO NECESITA - Círculo derecho */}
+                              <div class="ikigai-circle ikigai-need absolute rounded-full 
+                                          bg-gradient-to-bl from-purple-300/80 to-purple-400/80 
+                                          flex flex-col items-center justify-center shadow-lg border border-purple-200 
+                                          text-center p-5 z-10">
+                                <h3 class="text-white font-bold text-sm md:text-base mb-2 drop-shadow-md">
+                                  LO QUE EL MUNDO<br/>NECESITA
+                                </h3>
+                                <div class="max-w-[90%] max-h-[60%] overflow-auto scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-200">
+                                  <p class="text-white text-xs md:text-sm font-medium">
+                                    {state.ikigaiResponses.need || "Sin datos"}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                            
-                            {/* Sección Por lo que te pagarían */}
-                            <div class="bg-indigo-100 rounded-lg p-3 shadow-sm">
-                              <h3 class="text-center font-bold text-indigo-800 mb-2 text-sm">Por lo que te pagarían</h3>
-                              <div class="border-t border-indigo-300 pt-2">
-                                <p class="text-sm text-indigo-700 text-center">
-                                  {state.ikigaiResponses.payment || "Sin datos"}
-                                </p>
+                              
+                              {/* POR LO QUE TE PAGARÍAN - Círculo inferior */}
+                              <div class="ikigai-circle ikigai-payment absolute rounded-full 
+                                          bg-gradient-to-t from-indigo-300/80 to-indigo-400/80 
+                                          flex flex-col items-center justify-center shadow-lg border border-indigo-200 
+                                          text-center p-5 z-10">
+                                <h3 class="text-white font-bold text-sm md:text-base mb-2 drop-shadow-md">
+                                  POR LO QUE TE<br/>PAGARÍAN
+                                </h3>
+                                <div class="max-w-[90%] max-h-[60%] overflow-auto scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-200">
+                                  <p class="text-white text-xs md:text-sm font-medium">
+                                    {state.ikigaiResponses.payment || "Sin datos"}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                            
-                            {/* Centro IKIGAI */}
-                            <div class="col-span-2 mx-auto mt-2">
-                              <div class="bg-slate-800 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                                IKIGAI - Tu propósito de vida
+                              
+                              {/* Centro IKIGAI */}
+                              <div class="ikigai-center absolute rounded-full bg-white 
+                                          flex items-center justify-center shadow-xl border-2 border-slate-300
+                                          z-30">
+                                <div class="bg-gradient-to-r from-slate-700 to-slate-800 
+                                            text-white px-5 py-2.5 rounded-full text-base font-bold
+                                            shadow-inner">
+                                  IKIGAI
+                                </div>
+                              </div>
+                              
+                              {/* Intersecciones visuales - Círculos translúcidos de intersección */}
+                              <div class="intersection-circle absolute rounded-full intersection-passion-circle"></div>
+                              <div class="intersection-circle absolute rounded-full intersection-mission-circle"></div>
+                              <div class="intersection-circle absolute rounded-full intersection-profession-circle"></div>
+                              <div class="intersection-circle absolute rounded-full intersection-vocation-circle"></div>
+                              
+                              {/* Etiquetas de intersección */}
+                              <div class="intersection-label absolute z-20 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-blue-300 text-blue-800 font-semibold text-xs intersection-passion">
+                                PASIÓN
+                              </div>
+                              <div class="intersection-label absolute z-20 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-purple-300 text-purple-800 font-semibold text-xs intersection-mission">
+                                MISIÓN
+                              </div>
+                              <div class="intersection-label absolute z-20 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-green-300 text-green-800 font-semibold text-xs intersection-profession">
+                                PROFESIÓN
+                              </div>
+                              <div class="intersection-label absolute z-20 bg-white/80 px-2 py-1 rounded-md shadow-sm border border-indigo-300 text-indigo-800 font-semibold text-xs intersection-vocation">
+                                VOCACIÓN
                               </div>
                             </div>
                           </div>
                           
-                          <div class="text-center py-2 bg-teal-800 text-white font-bold mt-2 rounded-b-lg text-xs">
+                          <div class="text-center py-2 bg-teal-800 text-white font-bold mt-2 rounded-b-lg text-xs shadow-sm">
                             TUIKIGAI - "La frase que representa tu propósito de vida"
                           </div>
+                          
+                          {/* Estilos CSS inline para posicionar los elementos del diagrama */}
+                          <style dangerouslySetInnerHTML={`
+                            .ikigai-diagram-container {
+                              position: relative;
+                              width: 100%;
+                              height: 100%;
+                              overflow: hidden;
+                              background-color: rgba(248, 250, 252, 0.5);
+                              border-radius: 8px;
+                            }
+                            
+                            .ikigai-circle {
+                              width: 58%;
+                              height: 58%;
+                              border-width: 2px;
+                              box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                              opacity: 0.9;
+                              transition: all 0.3s ease;
+                            }
+                            
+                            .ikigai-circle:hover {
+                              opacity: 1;
+                              z-index: 20 !important;
+                              transform: translateX(-50%) scale(1.03);
+                            }
+                            
+                            .ikigai-talent:hover {
+                              transform: translateY(-50%) scale(1.03);
+                            }
+                            
+                            .ikigai-need:hover {
+                              transform: translateY(-50%) scale(1.03);
+                            }
+                            
+                            .ikigai-payment:hover {
+                              transform: translateX(-50%) scale(1.03);
+                            }
+                            
+                            .ikigai-love {
+                              top: 5%;
+                              left: 50%;
+                              transform: translateX(-50%);
+                              background: radial-gradient(circle, rgba(147, 197, 253, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%);
+                            }
+                            
+                            .ikigai-talent {
+                              top: 50%;
+                              left: 5%;
+                              transform: translateY(-50%);
+                              background: radial-gradient(circle, rgba(134, 239, 172, 0.8) 0%, rgba(34, 197, 94, 0.8) 100%);
+                            }
+                            
+                            .ikigai-need {
+                              top: 50%;
+                              right: 5%;
+                              transform: translateY(-50%);
+                              background: radial-gradient(circle, rgba(216, 180, 254, 0.8) 0%, rgba(168, 85, 247, 0.8) 100%);
+                            }
+                            
+                            .ikigai-payment {
+                              bottom: 5%;
+                              left: 50%;
+                              transform: translateX(-50%);
+                              background: radial-gradient(circle, rgba(165, 180, 252, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%);
+                            }
+                            
+                            .ikigai-center {
+                              top: 50%;
+                              left: 50%;
+                              transform: translate(-50%, -50%);
+                              width: 22%;
+                              height: 22%;
+                              background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(241, 245, 249, 1) 100%);
+                              box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                              z-index: 30;
+                            }
+                            
+                            /* Círculos de intersección */
+                            .intersection-circle {
+                              width: 30%;
+                              height: 30%;
+                              opacity: 0.1;
+                              z-index: 5;
+                            }
+                            
+                            .intersection-passion-circle {
+                              top: 27%;
+                              left: 27%;
+                              transform: translate(-50%, -50%);
+                              background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(34, 197, 94, 0.6) 100%);
+                            }
+                            
+                            .intersection-mission-circle {
+                              top: 27%;
+                              right: 27%;
+                              transform: translate(50%, -50%);
+                              background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(168, 85, 247, 0.6) 100%);
+                            }
+                            
+                            .intersection-profession-circle {
+                              bottom: 27%;
+                              left: 27%;
+                              transform: translate(-50%, 50%);
+                              background: radial-gradient(circle, rgba(34, 197, 94, 0.6) 0%, rgba(99, 102, 241, 0.6) 100%);
+                            }
+                            
+                            .intersection-vocation-circle {
+                              bottom: 27%;
+                              right: 27%;
+                              transform: translate(50%, 50%);
+                              background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(99, 102, 241, 0.6) 100%);
+                            }
+                            
+                            .intersection-label {
+                              white-space: nowrap;
+                              transform: translate(-50%, -50%);
+                              font-size: 10px;
+                              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                              opacity: 0.9;
+                              transition: all 0.2s ease;
+                            }
+                            
+                            .intersection-label:hover {
+                              transform: translate(-50%, -50%) scale(1.1);
+                              z-index: 40;
+                              opacity: 1;
+                            }
+                            
+                            .intersection-passion {
+                              top: 28%;
+                              left: 28%;
+                              transform: translate(-50%, -50%) rotate(-45deg);
+                            }
+                            
+                            .intersection-mission {
+                              top: 28%;
+                              right: 28%;
+                              transform: translate(50%, -50%) rotate(45deg);
+                            }
+                            
+                            .intersection-profession {
+                              bottom: 28%;
+                              left: 28%;
+                              transform: translate(-50%, 50%) rotate(45deg);
+                            }
+                            
+                            .intersection-vocation {
+                              bottom: 28%;
+                              right: 28%;
+                              transform: translate(50%, 50%) rotate(-45deg);
+                            }
+                            
+                            /* Scrollbar personalizado para los textos */
+                            .scrollbar-thin::-webkit-scrollbar {
+                              width: 4px;
+                            }
+                            
+                            .scrollbar-thumb-blue-700::-webkit-scrollbar-thumb {
+                              background-color: rgba(29, 78, 216, 0.6);
+                              border-radius: 2px;
+                            }
+                            
+                            .scrollbar-track-blue-200::-webkit-scrollbar-track {
+                              background-color: rgba(191, 219, 254, 0.3);
+                            }
+                            
+                            .scrollbar-thumb-green-700::-webkit-scrollbar-thumb {
+                              background-color: rgba(16, 122, 87, 0.6);
+                              border-radius: 2px;
+                            }
+                            
+                            .scrollbar-track-green-200::-webkit-scrollbar-track {
+                              background-color: rgba(187, 247, 208, 0.3);
+                            }
+                            
+                            .scrollbar-thumb-purple-700::-webkit-scrollbar-thumb {
+                              background-color: rgba(109, 40, 217, 0.6);
+                              border-radius: 2px;
+                            }
+                            
+                            .scrollbar-track-purple-200::-webkit-scrollbar-track {
+                              background-color: rgba(221, 214, 254, 0.3);
+                            }
+                            
+                            .scrollbar-thumb-indigo-700::-webkit-scrollbar-thumb {
+                              background-color: rgba(67, 56, 202, 0.6);
+                              border-radius: 2px;
+                            }
+                            
+                            .scrollbar-track-indigo-200::-webkit-scrollbar-track {
+                              background-color: rgba(199, 210, 254, 0.3);
+                            }
+                            
+                            /* Animación sutil para cuando el diagrama aparece */
+                            @keyframes fadeIn {
+                              from { opacity: 0; transform: scale(0.95); }
+                              to { opacity: 1; transform: scale(1); }
+                            }
+                            
+                            .ikigai-diagram-container {
+                              animation: fadeIn 0.5s ease forwards;
+                            }
+                            
+                            /* Responsive adjustments */
+                            @media (max-width: 640px) {
+                              .ikigai-circle {
+                                width: 62%;
+                                height: 62%;
+                              }
+                              
+                              .ikigai-center {
+                                width: 26%;
+                                height: 26%;
+                              }
+                            }
+                          `} />
                         </div>
                       </div>
                     )}
