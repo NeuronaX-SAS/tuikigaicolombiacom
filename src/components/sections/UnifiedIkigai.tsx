@@ -41,6 +41,7 @@ export default component$(() => {
   // Estado para las imágenes de ikigai prediseñadas
   const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Verde.png'));
   const showStaticIkigai = useSignal(true);
+  const hasSwitchedView = useSignal(false); // Nuevo signal para rastrear cambios de vista
 
   // Contadores de caracteres
   const characterCounts = useStore({ love: 0, talent: 0, need: 0, payment: 0 });
@@ -873,6 +874,7 @@ export default component$(() => {
                     ) : (
                       <div class="w-full h-full p-4">
                         <IkigaiDiagram 
+                          key={`ikigai-diagram-${hasSwitchedView.value ? 'dynamic' : 'static'}-${Date.now()}`}
                           responses={state.ikigaiResponses} 
                           convergenceIndex={state.convergenceIndex}
                           userName={state.userName}
@@ -888,7 +890,16 @@ export default component$(() => {
                       {showStaticIkigai.value ? "Selecciona un color" : "Ikigai en Tiempo Real"}
                     </p>
                     <button 
-                      onClick$={() => showStaticIkigai.value = !showStaticIkigai.value}
+                      onClick$={() => {
+                        // Limpiar referencia antes de cambiar la vista
+                        if (!showStaticIkigai.value) {
+                          svgRef.value = undefined;
+                        }
+                        // Marcar que hubo un cambio de vista
+                        hasSwitchedView.value = true;
+                        // Cambiar la vista
+                        showStaticIkigai.value = !showStaticIkigai.value;
+                      }}
                       class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-md transition-all flex items-center"
                     >
                       {showStaticIkigai.value ? (
