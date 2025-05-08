@@ -976,15 +976,22 @@ export default component$(() => {
                               overflow: hidden;
                               background-color: rgba(248, 250, 252, 0.5);
                               border-radius: 8px;
+                              aspect-ratio: 1/1; /* Ensure perfect square container */
                             }
                             
                             .ikigai-circle {
                               width: 60%;
                               height: 60%;
-                              border-width: 1px;
+                              border-width: 2px; /* Slightly thicker border */
+                              border-style: solid;
+                              border-color: rgba(255, 255, 255, 0.5);
                               box-shadow: 0 4px 15px rgba(0,0,0,0.1);
                               opacity: 1;
                               transition: all 0.3s ease;
+                              border-radius: 9999px; /* Ensure perfect roundness */
+                              overflow: hidden; /* Prevent content from breaking the circle shape */
+                              aspect-ratio: 1/1; /* Enforce 1:1 aspect ratio */
+                              transform-origin: center; /* Better transformation */
                             }
                             
                             .ikigai-circle h3 {
@@ -1075,6 +1082,7 @@ export default component$(() => {
                               .ikigai-circle {
                                 width: 52%;
                                 height: 52%;
+                                border-radius: 9999px; /* Reinforce roundness on mobile */
                               }
                               
                               .ikigai-circle h3 {
