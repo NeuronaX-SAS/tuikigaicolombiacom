@@ -41,8 +41,7 @@ export default component$(() => {
   // Estado para las imágenes de ikigai prediseñadas
   const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Verde.png'));
   const showStaticIkigai = useSignal(true);
-  const hasSwitchedView = useSignal(false); // Track view changes
-  const viewToggleCounter = useSignal(0); // Counter for forcing remounts
+  const forceRender = useSignal(0);
 
   // Contadores de caracteres
   const characterCounts = useStore({ love: 0, talent: 0, need: 0, payment: 0 });
@@ -96,11 +95,11 @@ export default component$(() => {
   useVisibleTask$(({ track, cleanup }) => {
     track(() => [
       state.ikigaiResponses.love, state.ikigaiResponses.talent, state.ikigaiResponses.need, state.ikigaiResponses.payment,
-      state.userName, state.acceptTerms, state.acceptPrivacy, viewToggleCounter.value
+      state.userName, state.acceptTerms, state.acceptPrivacy, forceRender.value
     ]);
 
     console.log('VisibleTask triggered. View type:', showStaticIkigai.value ? 'Static' : 'Dynamic');
-    console.log('VisibleTask counter:', viewToggleCounter.value);
+    console.log('VisibleTask counter:', forceRender.value);
 
     const sections = [state.ikigaiResponses.love, state.ikigaiResponses.talent, state.ikigaiResponses.need, state.ikigaiResponses.payment];
     const completedSections = sections.filter(section => section.trim().length > 0).length;
@@ -613,26 +612,9 @@ export default component$(() => {
 
   // Función para alternar entre vistas estática y dinámica
   const toggleIkigaiView = $(() => {
-    console.log('Toggling Ikigai view. Current:', showStaticIkigai.value ? 'Static' : 'Dynamic');
-    console.log('Current responses:', state.ikigaiResponses);
-    
-    // Forzar remontaje completo incrementando el contador
-    viewToggleCounter.value++;
-    
-    // Limpiar referencia SVG explícitamente antes de cambiar la vista
-    svgRef.value = undefined;
-    
-    // Marcar cambio de vista y cambiar estado
-    hasSwitchedView.value = !hasSwitchedView.value;
+    console.log('Toggling Ikigai view');
     showStaticIkigai.value = !showStaticIkigai.value;
-    
-    console.log('Toggled to:', showStaticIkigai.value ? 'Static' : 'Dynamic', 
-      'Counter:', viewToggleCounter.value);
-    
-    // Forzar un pequeño retraso para asegurar que el DOM se actualice
-    setTimeout(() => {
-      console.log('Post-toggle check - svgRef exists:', !!svgRef.value);
-    }, 100);
+    forceRender.value++; // Force re-render
   });
 
   return (
@@ -897,11 +879,11 @@ export default component$(() => {
               </button>
             </div>
 
-            {/* Columna derecha para el diagrama Ikigai - REESTRUCTURADA */}
+            {/* Columna derecha para el diagrama Ikigai - NUEVO ENFOQUE */}
             <div class="xl:sticky xl:top-8">
               <div class="bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:border-slate-300 overflow-hidden">
                 <div class="aspect-square w-full">
-                  <div class="w-full h-full relative" ref={containerRef}>
+                  <div class="w-full h-full relative">
                     {/* Vista estática del IKIGAI */}
                     {showStaticIkigai.value && (
                       <img 
@@ -911,16 +893,68 @@ export default component$(() => {
                       />
                     )}
                     
-                    {/* Vista dinámica del IKIGAI */}
+                    {/* Vista dinámica del IKIGAI - IMPLEMENTATION FALLBACK */}
                     {!showStaticIkigai.value && (
-                      <div class="w-full h-full p-4">
-                        <IkigaiDiagram 
-                          key={`ikigai-diagram-${viewToggleCounter.value}`}
-                          responses={state.ikigaiResponses} 
-                          convergenceIndex={state.convergenceIndex}
-                          userName={state.userName}
-                          ref={svgRef}
-                        />
+                      <div class="w-full h-full p-4 bg-white overflow-auto" key={forceRender.value}>
+                        <div class="flex flex-col h-full">
+                          <div class="text-center py-2 bg-teal-800 text-white font-bold rounded-t-lg">
+                            {state.userName || "Tu nombre aquí"}
+                          </div>
+                          
+                          {/* Contenedor principal del diagrama */}
+                          <div class="flex-1 grid grid-cols-2 gap-2 p-4 border border-gray-200 bg-gray-50 rounded-b-lg">
+                            {/* Sección Lo que amas */}
+                            <div class="bg-blue-100 rounded-lg p-3 shadow-sm">
+                              <h3 class="text-center font-bold text-blue-800 mb-2 text-sm">Lo que amas</h3>
+                              <div class="border-t border-blue-300 pt-2">
+                                <p class="text-sm text-blue-700 text-center">
+                                  {state.ikigaiResponses.love || "Sin datos"}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {/* Sección En lo que eres bueno */}
+                            <div class="bg-green-100 rounded-lg p-3 shadow-sm">
+                              <h3 class="text-center font-bold text-green-800 mb-2 text-sm">En lo que eres bueno</h3>
+                              <div class="border-t border-green-300 pt-2">
+                                <p class="text-sm text-green-700 text-center">
+                                  {state.ikigaiResponses.talent || "Sin datos"}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {/* Sección Lo que el mundo necesita */}
+                            <div class="bg-purple-100 rounded-lg p-3 shadow-sm">
+                              <h3 class="text-center font-bold text-purple-800 mb-2 text-sm">Lo que el mundo necesita</h3>
+                              <div class="border-t border-purple-300 pt-2">
+                                <p class="text-sm text-purple-700 text-center">
+                                  {state.ikigaiResponses.need || "Sin datos"}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {/* Sección Por lo que te pagarían */}
+                            <div class="bg-indigo-100 rounded-lg p-3 shadow-sm">
+                              <h3 class="text-center font-bold text-indigo-800 mb-2 text-sm">Por lo que te pagarían</h3>
+                              <div class="border-t border-indigo-300 pt-2">
+                                <p class="text-sm text-indigo-700 text-center">
+                                  {state.ikigaiResponses.payment || "Sin datos"}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {/* Centro IKIGAI */}
+                            <div class="col-span-2 mx-auto mt-2">
+                              <div class="bg-slate-800 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                                IKIGAI - Tu propósito de vida
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div class="text-center py-2 bg-teal-800 text-white font-bold mt-2 rounded-b-lg text-xs">
+                            TUIKIGAI - "La frase que representa tu propósito de vida"
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
