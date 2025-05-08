@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore, $, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, useSignal, useStore, $, useVisibleTask$, type Signal } from '@builder.io/qwik';
 import IkigaiDiagram from '../ui/IkigaiDiagram';
 import IkigaiCard from '../ui/IkigaiCard';
 import { getAssetPath } from '../../utils/assetPath';
@@ -23,6 +23,38 @@ interface UnifiedIkigaiState {
   progress: number;
   currentStep: number;
 }
+
+// Helper component for the static Ikigai image view
+const StaticIkigaiView = component$(({ imageSrc }: { imageSrc: string | null }) => {
+  return (
+    <img
+      key="static-ikigai-view"
+      src={imageSrc || getAssetPath('images/IKIGAI_Verde.png')}
+      alt="IKIGAI Plantilla"
+      class="w-full h-full object-contain"
+    />
+  );
+});
+
+// Helper component for the dynamic Ikigai diagram view
+interface DynamicIkigaiViewProps {
+  responses: UnifiedIkigaiState['ikigaiResponses'];
+  convergenceIndex: number;
+  userName: string;
+  svgRef: Signal<SVGSVGElement | undefined>;
+}
+const DynamicIkigaiView = component$<DynamicIkigaiViewProps>(({ responses, convergenceIndex, userName, svgRef }) => {
+  return (
+    <div key="dynamic-ikigai-view" class="w-full h-full p-4">
+      <IkigaiDiagram
+        responses={responses}
+        convergenceIndex={convergenceIndex}
+        userName={userName}
+        ref={svgRef}
+      />
+    </div>
+  );
+});
 
 export default component$(() => {
   // Estado global unificado
@@ -865,20 +897,14 @@ export default component$(() => {
                 <div class="aspect-square w-full">
                   <div class="w-full h-full relative">
                     {showStaticIkigai.value ? (
-                      <img 
-                        src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')} 
-                        alt="IKIGAI Plantilla" 
-                        class="w-full h-full object-contain" 
-                      />
+                      <StaticIkigaiView imageSrc={selectedIkigaiImage.value} />
                     ) : (
-                      <div class="w-full h-full p-4">
-                        <IkigaiDiagram 
-                          responses={state.ikigaiResponses} 
-                          convergenceIndex={state.convergenceIndex}
-                          userName={state.userName}
-                          ref={svgRef}
-                        />
-                      </div>
+                      <DynamicIkigaiView
+                        responses={state.ikigaiResponses}
+                        convergenceIndex={state.convergenceIndex}
+                        userName={state.userName}
+                        svgRef={svgRef}
+                      />
                     )}
                   </div>
                 </div>
