@@ -960,12 +960,6 @@ export default component$(() => {
                                   </p>
                                 </div>
                               </div>
-                              
-                              {/* Intersecciones visuales - Círculos translúcidos de intersección */}
-                              <div class="intersection-circle absolute rounded-full intersection-passion-circle"></div>
-                              <div class="intersection-circle absolute rounded-full intersection-mission-circle"></div>
-                              <div class="intersection-circle absolute rounded-full intersection-profession-circle"></div>
-                              <div class="intersection-circle absolute rounded-full intersection-vocation-circle"></div>
                             </div>
                           </div>
                           
@@ -1049,43 +1043,6 @@ export default component$(() => {
                               transform: translateX(-50%);
                               background: #18709c;
                               opacity: 0.5;
-                            }
-                            
-                            /* Círculos de intersección */
-                            .intersection-circle {
-                              width: 40%;
-                              height: 40%;
-                              opacity: 0.3;
-                              z-index: 5;
-                              filter: blur(5px);
-                            }
-                            
-                            .intersection-passion-circle {
-                              top: 25%;
-                              left: 25%;
-                              transform: translate(-50%, -50%);
-                              background: #10bec5;
-                            }
-                            
-                            .intersection-mission-circle {
-                              top: 25%;
-                              right: 25%;
-                              transform: translate(50%, -50%);
-                              background: #10bec5;
-                            }
-                            
-                            .intersection-profession-circle {
-                              bottom: 25%;
-                              left: 25%;
-                              transform: translate(-50%, 50%);
-                              background: #18709c;
-                            }
-                            
-                            .intersection-vocation-circle {
-                              bottom: 25%;
-                              right: 25%;
-                              transform: translate(50%, 50%);
-                              background: #18709c;
                             }
                             
                             /* Scrollbar personalizado para los textos */
