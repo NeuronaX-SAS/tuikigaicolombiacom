@@ -864,23 +864,22 @@ export default component$(() => {
               <div class="bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:border-slate-300 overflow-hidden">
                 <div class="aspect-square w-full">
                   <div class="w-full h-full relative">
-                    <img
-                      key="static-ikigai"
-                      src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')}
-                      alt="IKIGAI Plantilla"
-                      class={`w-full h-full object-contain ${showStaticIkigai.value ? '' : 'hidden'}`}
-                    />
-                    <div
-                      key="dynamic-ikigai"
-                      class={`w-full h-full p-4 ${showStaticIkigai.value ? 'hidden' : ''}`}
-                    >
-                      <IkigaiDiagram
-                        responses={state.ikigaiResponses}
-                        convergenceIndex={state.convergenceIndex}
-                        userName={state.userName}
-                        ref={svgRef}
+                    {showStaticIkigai.value ? (
+                      <img 
+                        src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')} 
+                        alt="IKIGAI Plantilla" 
+                        class="w-full h-full object-contain" 
                       />
-                    </div>
+                    ) : (
+                      <div class="w-full h-full p-4">
+                        <IkigaiDiagram 
+                          responses={state.ikigaiResponses} 
+                          convergenceIndex={state.convergenceIndex}
+                          userName={state.userName}
+                          ref={svgRef}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div class="p-4 border-t border-slate-200">
