@@ -112,23 +112,6 @@ export default component$(() => {
     state.currentStep = completedSections;
   });
 
-  // Track when we show the dynamic diagram to ensure it's properly initialized
-  useVisibleTask$(({ track }) => {
-    track(() => showStaticIkigai.value);
-    
-    // If we're showing the dynamic diagram
-    if (!showStaticIkigai.value) {
-      // A small delay to ensure the DOM is ready
-      setTimeout(() => {
-        // Force refresh of diagram if we have responses
-        if (Object.values(state.ikigaiResponses).some(v => v.trim().length > 0)) {
-          // Create a shallow copy to trigger reactivity
-          state.ikigaiResponses = { ...state.ikigaiResponses };
-        }
-      }, 50);
-    }
-  });
-
   // Mensajes motivacionales mejorados
   const motivationalMessages = {
     love: [
@@ -888,15 +871,13 @@ export default component$(() => {
                         class="w-full h-full object-contain" 
                       />
                     ) : (
-                      <div class="w-full h-full" key={`dynamic-ikigai-${Date.now()}`}>
-                        <div class="w-full h-full p-4">
-                          <IkigaiDiagram 
-                            responses={state.ikigaiResponses} 
-                            convergenceIndex={state.convergenceIndex}
-                            userName={state.userName}
-                            ref={svgRef}
-                          />
-                        </div>
+                      <div class="w-full h-full p-4">
+                        <IkigaiDiagram 
+                          responses={state.ikigaiResponses} 
+                          convergenceIndex={state.convergenceIndex}
+                          userName={state.userName}
+                          ref={svgRef}
+                        />
                       </div>
                     )}
                   </div>
@@ -907,13 +888,7 @@ export default component$(() => {
                       {showStaticIkigai.value ? "Selecciona un color" : "Ikigai en Tiempo Real"}
                     </p>
                     <button 
-                      onClick$={() => {
-                        // Force cleanup of SVG before toggling
-                        if (!showStaticIkigai.value) {
-                          svgRef.value = undefined;
-                        }
-                        showStaticIkigai.value = !showStaticIkigai.value;
-                      }}
+                      onClick$={() => showStaticIkigai.value = !showStaticIkigai.value}
                       class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-md transition-all flex items-center"
                     >
                       {showStaticIkigai.value ? (
