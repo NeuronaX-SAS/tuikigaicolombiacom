@@ -41,7 +41,8 @@ export default component$(() => {
   // Estado para las imágenes de ikigai prediseñadas
   const selectedIkigaiImage = useSignal<string | null>(getAssetPath('images/IKIGAI_Verde.png'));
   const showStaticIkigai = useSignal(true);
-  const hasSwitchedView = useSignal(false); // Nuevo signal para rastrear cambios de vista
+  const hasSwitchedView = useSignal(false); // Track view changes
+  const viewToggleCounter = useSignal(0); // Counter for forcing remounts
 
   // Contadores de caracteres
   const characterCounts = useStore({ love: 0, talent: 0, need: 0, payment: 0 });
@@ -92,11 +93,14 @@ export default component$(() => {
   });
 
   // Calcular progreso total y actualizar el diagrama
-  useVisibleTask$(({ track }) => {
+  useVisibleTask$(({ track, cleanup }) => {
     track(() => [
       state.ikigaiResponses.love, state.ikigaiResponses.talent, state.ikigaiResponses.need, state.ikigaiResponses.payment,
-      state.userName, state.acceptTerms, state.acceptPrivacy
+      state.userName, state.acceptTerms, state.acceptPrivacy, viewToggleCounter.value
     ]);
+
+    console.log('VisibleTask triggered. View type:', showStaticIkigai.value ? 'Static' : 'Dynamic');
+    console.log('VisibleTask counter:', viewToggleCounter.value);
 
     const sections = [state.ikigaiResponses.love, state.ikigaiResponses.talent, state.ikigaiResponses.need, state.ikigaiResponses.payment];
     const completedSections = sections.filter(section => section.trim().length > 0).length;
@@ -111,6 +115,15 @@ export default component$(() => {
 
     // Actualiza el paso actual para animar la línea de progreso
     state.currentStep = completedSections;
+    
+    // Cleanup function for proper component disposal
+    cleanup(() => {
+      console.log('Cleanup triggered for VisibleTask');
+      if (!showStaticIkigai.value) {
+        console.log('Cleaning dynamic view resources');
+        svgRef.value = undefined;
+      }
+    });
   });
 
   // Mensajes motivacionales mejorados
@@ -598,6 +611,30 @@ export default component$(() => {
     selectedIkigaiImage.value = templatePath;
   });
 
+  // Función para alternar entre vistas estática y dinámica
+  const toggleIkigaiView = $(() => {
+    console.log('Toggling Ikigai view. Current:', showStaticIkigai.value ? 'Static' : 'Dynamic');
+    console.log('Current responses:', state.ikigaiResponses);
+    
+    // Forzar remontaje completo incrementando el contador
+    viewToggleCounter.value++;
+    
+    // Limpiar referencia SVG explícitamente antes de cambiar la vista
+    svgRef.value = undefined;
+    
+    // Marcar cambio de vista y cambiar estado
+    hasSwitchedView.value = !hasSwitchedView.value;
+    showStaticIkigai.value = !showStaticIkigai.value;
+    
+    console.log('Toggled to:', showStaticIkigai.value ? 'Static' : 'Dynamic', 
+      'Counter:', viewToggleCounter.value);
+    
+    // Forzar un pequeño retraso para asegurar que el DOM se actualice
+    setTimeout(() => {
+      console.log('Post-toggle check - svgRef exists:', !!svgRef.value);
+    }, 100);
+  });
+
   return (
     <section class="min-h-screen w-full flex flex-col items-center justify-start relative overflow-hidden bg-black">
       {/* Efectos de fondo premium mejorados */}
@@ -860,21 +897,25 @@ export default component$(() => {
               </button>
             </div>
 
-            {/* Columna derecha para el diagrama Ikigai */}
+            {/* Columna derecha para el diagrama Ikigai - REESTRUCTURADA */}
             <div class="xl:sticky xl:top-8">
               <div class="bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:border-slate-300 overflow-hidden">
                 <div class="aspect-square w-full">
-                  <div class="w-full h-full relative">
-                    {showStaticIkigai.value ? (
+                  <div class="w-full h-full relative" ref={containerRef}>
+                    {/* Vista estática del IKIGAI */}
+                    {showStaticIkigai.value && (
                       <img 
                         src={selectedIkigaiImage.value || getAssetPath('images/IKIGAI_Verde.png')} 
                         alt="IKIGAI Plantilla" 
                         class="w-full h-full object-contain" 
                       />
-                    ) : (
+                    )}
+                    
+                    {/* Vista dinámica del IKIGAI */}
+                    {!showStaticIkigai.value && (
                       <div class="w-full h-full p-4">
                         <IkigaiDiagram 
-                          key={`ikigai-diagram-${hasSwitchedView.value ? 'dynamic' : 'static'}-${Date.now()}`}
+                          key={`ikigai-diagram-${viewToggleCounter.value}`}
                           responses={state.ikigaiResponses} 
                           convergenceIndex={state.convergenceIndex}
                           userName={state.userName}
@@ -890,16 +931,7 @@ export default component$(() => {
                       {showStaticIkigai.value ? "Selecciona un color" : "Ikigai en Tiempo Real"}
                     </p>
                     <button 
-                      onClick$={() => {
-                        // Limpiar referencia antes de cambiar la vista
-                        if (!showStaticIkigai.value) {
-                          svgRef.value = undefined;
-                        }
-                        // Marcar que hubo un cambio de vista
-                        hasSwitchedView.value = true;
-                        // Cambiar la vista
-                        showStaticIkigai.value = !showStaticIkigai.value;
-                      }}
+                      onClick$={toggleIkigaiView}
                       class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-md transition-all flex items-center"
                     >
                       {showStaticIkigai.value ? (
