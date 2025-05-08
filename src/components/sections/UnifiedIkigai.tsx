@@ -910,7 +910,7 @@ export default component$(() => {
                                           flex flex-col items-center justify-center shadow-lg border border-blue-200 
                                           text-center p-4 z-10">
                                 <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
-                                  LO QUE AMAS
+                                  Lo que Amas
                                 </h3>
                                 <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
@@ -921,12 +921,12 @@ export default component$(() => {
                               
                               {/* EN LO QUE ERES BUENO - Círculo izquierdo */}
                               <div class="ikigai-circle ikigai-talent absolute rounded-full 
-                                          flex flex-col items-center justify-center shadow-lg border border-green-200 
+                                          flex flex-col items-center justify-center shadow-lg border border-blue-200 
                                           text-center p-4 z-10">
                                 <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
-                                  EN LO QUE ERES<br/>BUENO
+                                  En lo que Eres<br/>Bueno
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-green-700 scrollbar-track-green-200">
+                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.talent || "Sin datos"}
                                   </p>
@@ -935,12 +935,12 @@ export default component$(() => {
                               
                               {/* LO QUE EL MUNDO NECESITA - Círculo derecho */}
                               <div class="ikigai-circle ikigai-need absolute rounded-full 
-                                          flex flex-col items-center justify-center shadow-lg border border-purple-200 
+                                          flex flex-col items-center justify-center shadow-lg border border-blue-200 
                                           text-center p-4 z-10">
                                 <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
-                                  LO QUE EL MUNDO<br/>NECESITA
+                                  Lo que el Mundo<br/>Necesita
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-purple-700 scrollbar-track-purple-200">
+                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.need || "Sin datos"}
                                   </p>
@@ -949,12 +949,12 @@ export default component$(() => {
                               
                               {/* POR LO QUE TE PAGARÍAN - Círculo inferior */}
                               <div class="ikigai-circle ikigai-payment absolute rounded-full 
-                                          flex flex-col items-center justify-center shadow-lg border border-indigo-200 
+                                          flex flex-col items-center justify-center shadow-lg border border-blue-200 
                                           text-center p-4 z-10">
                                 <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
-                                  POR LO QUE TE<br/>PAGARÍAN
+                                  Por lo que te<br/>Pagarían
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-indigo-700 scrollbar-track-indigo-200">
+                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.payment || "Sin datos"}
                                   </p>
@@ -985,11 +985,11 @@ export default component$(() => {
                             }
                             
                             .ikigai-circle {
-                              width: 62%;
-                              height: 62%;
-                              border-width: 2px;
+                              width: 60%;
+                              height: 60%;
+                              border-width: 1px;
                               box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                              opacity: 0.95;
+                              opacity: 1;
                               transition: all 0.3s ease;
                             }
                             
@@ -1023,65 +1023,69 @@ export default component$(() => {
                               top: 0%;
                               left: 50%;
                               transform: translateX(-50%);
-                              background: radial-gradient(circle, rgba(147, 197, 253, 0.9) 0%, rgba(59, 130, 246, 0.9) 100%);
+                              background: #10bec5;
+                              opacity: 0.5;
                             }
                             
                             .ikigai-talent {
                               top: 50%;
                               left: 0%;
                               transform: translateY(-50%);
-                              background: radial-gradient(circle, rgba(134, 239, 172, 0.9) 0%, rgba(34, 197, 94, 0.9) 100%);
+                              background: #10bec5;
+                              opacity: 0.5;
                             }
                             
                             .ikigai-need {
                               top: 50%;
                               right: 0%;
                               transform: translateY(-50%);
-                              background: radial-gradient(circle, rgba(216, 180, 254, 0.9) 0%, rgba(168, 85, 247, 0.9) 100%);
+                              background: #18709c;
+                              opacity: 0.5;
                             }
                             
                             .ikigai-payment {
                               bottom: 0%;
                               left: 50%;
                               transform: translateX(-50%);
-                              background: radial-gradient(circle, rgba(165, 180, 252, 0.9) 0%, rgba(99, 102, 241, 0.9) 100%);
+                              background: #18709c;
+                              opacity: 0.5;
                             }
                             
                             /* Círculos de intersección */
                             .intersection-circle {
                               width: 40%;
                               height: 40%;
-                              opacity: 0.15;
+                              opacity: 0.3;
                               z-index: 5;
-                              filter: blur(10px);
+                              filter: blur(5px);
                             }
                             
                             .intersection-passion-circle {
                               top: 25%;
                               left: 25%;
                               transform: translate(-50%, -50%);
-                              background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(34, 197, 94, 0.8) 100%);
+                              background: #10bec5;
                             }
                             
                             .intersection-mission-circle {
                               top: 25%;
                               right: 25%;
                               transform: translate(50%, -50%);
-                              background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(168, 85, 247, 0.8) 100%);
+                              background: #10bec5;
                             }
                             
                             .intersection-profession-circle {
                               bottom: 25%;
                               left: 25%;
                               transform: translate(-50%, 50%);
-                              background: radial-gradient(circle, rgba(34, 197, 94, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%);
+                              background: #18709c;
                             }
                             
                             .intersection-vocation-circle {
                               bottom: 25%;
                               right: 25%;
                               transform: translate(50%, 50%);
-                              background: radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%);
+                              background: #18709c;
                             }
                             
                             /* Scrollbar personalizado para los textos */
@@ -1098,33 +1102,6 @@ export default component$(() => {
                               background-color: rgba(191, 219, 254, 0.3);
                             }
                             
-                            .scrollbar-thumb-green-700::-webkit-scrollbar-thumb {
-                              background-color: rgba(16, 122, 87, 0.6);
-                              border-radius: 2px;
-                            }
-                            
-                            .scrollbar-track-green-200::-webkit-scrollbar-track {
-                              background-color: rgba(187, 247, 208, 0.3);
-                            }
-                            
-                            .scrollbar-thumb-purple-700::-webkit-scrollbar-thumb {
-                              background-color: rgba(109, 40, 217, 0.6);
-                              border-radius: 2px;
-                            }
-                            
-                            .scrollbar-track-purple-200::-webkit-scrollbar-track {
-                              background-color: rgba(221, 214, 254, 0.3);
-                            }
-                            
-                            .scrollbar-thumb-indigo-700::-webkit-scrollbar-thumb {
-                              background-color: rgba(67, 56, 202, 0.6);
-                              border-radius: 2px;
-                            }
-                            
-                            .scrollbar-track-indigo-200::-webkit-scrollbar-track {
-                              background-color: rgba(199, 210, 254, 0.3);
-                            }
-                            
                             /* Animación sutil para cuando el diagrama aparece */
                             @keyframes fadeIn {
                               from { opacity: 0; transform: scale(0.95); }
@@ -1138,12 +1115,18 @@ export default component$(() => {
                             /* Responsive adjustments */
                             @media (max-width: 640px) {
                               .ikigai-circle {
-                                width: 65%;
-                                height: 65%;
+                                width: 60%;
+                                height: 60%;
                               }
                               
                               .ikigai-circle h3 {
                                 font-size: 0.8rem;
+                                padding-bottom: 0.2rem;
+                                margin-bottom: 0.2rem;
+                              }
+                              
+                              .ikigai-circle p {
+                                font-size: 0.7rem;
                               }
                             }
                           `} />
