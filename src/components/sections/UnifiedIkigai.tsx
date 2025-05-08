@@ -689,7 +689,7 @@ export default component$(() => {
                 <div class="absolute left-0 bottom-full mb-2 w-64 bg-white rounded-lg shadow-lg p-4 border border-slate-200 transform transition-opacity animate-fade-in z-20">
                   <div class="absolute bottom-0 left-3 transform translate-y-1/2 rotate-45 w-3 h-3 bg-white border-r border-b border-slate-200"></div>
                   <h4 class="font-medium text-sm text-slate-800 mb-1">¿Qué es el Ikigai?</h4>
-                  <p class="text-xs text-slate-600">Es la razón de ser en la vida, tu propósito por el cual te levantas todos los días y le das significado a tus acciones.</p>
+                  <p class="text-xs text-slate-600 text-justify">Es la razón de ser en la vida, tu propósito por el cual te levantas todos los días y le das significado a tus acciones.</p>
                 </div>
               )}
             </div>
@@ -714,7 +714,7 @@ export default component$(() => {
                 <div class="absolute right-0 bottom-full mb-2 w-72 bg-white rounded-lg shadow-lg p-4 border border-slate-200 transform transition-opacity animate-fade-in z-20">
                   <div class="absolute bottom-0 right-3 transform translate-y-1/2 rotate-45 w-3 h-3 bg-white border-r border-b border-slate-200"></div>
                   <h4 class="font-medium text-sm text-slate-800 mb-1">¿Qué hacemos en tu Ikigai?</h4>
-                  <p class="text-xs text-slate-600">Todos te dicen que debes tener un propósito pero no te dicen cómo construirlo. En TuIkigai te ayudamos a resolverlo, encontrando la conexión vital entre lo que amas, en lo que eres bueno, lo que el mundo necesita y tu sustento económico.</p>
+                  <p class="text-xs text-slate-600 text-justify">Todos te dicen que debes tener un propósito pero no te dicen cómo construirlo. En TuIkigai te ayudamos a resolverlo, encontrando la conexión vital entre lo que amas, en lo que eres bueno, lo que el mundo necesita y tu sustento económico.</p>
                 </div>
               )}
             </div>
