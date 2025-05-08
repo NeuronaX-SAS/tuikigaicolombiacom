@@ -895,24 +895,24 @@ export default component$(() => {
                     
                     {/* Vista dinámica del IKIGAI - IMPLEMENTATION FALLBACK */}
                     {!showStaticIkigai.value && (
-                      <div class="w-full h-full p-2 bg-white overflow-hidden" key={forceRender.value}>
+                      <div class="w-full h-full p-1 sm:p-2 bg-white overflow-hidden" key={forceRender.value}>
                         <div class="flex flex-col h-full">
-                          <div class="text-center py-2 bg-teal-800 text-white font-bold rounded-t-lg shadow-sm">
+                          <div class="text-center py-1 sm:py-2 bg-teal-800 text-white font-bold rounded-t-lg shadow-sm">
                             {state.userName || "Tu nombre aquí"}
                           </div>
                           
-                          {/* Contenedor circular del diagrama */}
-                          <div class="flex-1 relative p-1 border border-gray-200 bg-slate-50 rounded-b-lg overflow-hidden">
+                          {/* Contenedor circular del diagrama con menos padding en móvil */}
+                          <div class="flex-1 relative p-0.5 sm:p-1 border border-gray-200 bg-slate-50 rounded-b-lg overflow-hidden">
                             {/* Círculos base con gradientes sutiles */}
                             <div class="ikigai-diagram-container relative w-full h-full">
                               {/* LO QUE AMAS - Círculo superior */}
                               <div class="ikigai-circle ikigai-love absolute rounded-full 
                                           flex flex-col items-center justify-center shadow-lg border border-blue-200 
-                                          text-center p-4 z-10">
-                                <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
+                                          text-center p-2 sm:p-4 z-10">
+                                <h3 class="text-white font-bold text-xs sm:text-sm md:text-base mb-0.5 sm:mb-1 drop-shadow-md">
                                   Lo que Amas
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
+                                <div class="w-full h-[90%] sm:h-[85%] px-1 sm:px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.love || "Sin datos"}
                                   </p>
@@ -922,11 +922,11 @@ export default component$(() => {
                               {/* EN LO QUE ERES BUENO - Círculo izquierdo */}
                               <div class="ikigai-circle ikigai-talent absolute rounded-full 
                                           flex flex-col items-center justify-center shadow-lg border border-blue-200 
-                                          text-center p-4 z-10">
-                                <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
+                                          text-center p-2 sm:p-4 z-10">
+                                <h3 class="text-white font-bold text-xs sm:text-sm md:text-base mb-0.5 sm:mb-1 drop-shadow-md">
                                   En lo que Eres<br/>Bueno
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
+                                <div class="w-full h-[90%] sm:h-[85%] px-1 sm:px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.talent || "Sin datos"}
                                   </p>
@@ -936,11 +936,11 @@ export default component$(() => {
                               {/* LO QUE EL MUNDO NECESITA - Círculo derecho */}
                               <div class="ikigai-circle ikigai-need absolute rounded-full 
                                           flex flex-col items-center justify-center shadow-lg border border-blue-200 
-                                          text-center p-4 z-10">
-                                <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
+                                          text-center p-2 sm:p-4 z-10">
+                                <h3 class="text-white font-bold text-xs sm:text-sm md:text-base mb-0.5 sm:mb-1 drop-shadow-md">
                                   Lo que el Mundo<br/>Necesita
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
+                                <div class="w-full h-[90%] sm:h-[85%] px-1 sm:px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.need || "Sin datos"}
                                   </p>
@@ -950,11 +950,11 @@ export default component$(() => {
                               {/* POR LO QUE TE PAGARÍAN - Círculo inferior */}
                               <div class="ikigai-circle ikigai-payment absolute rounded-full 
                                           flex flex-col items-center justify-center shadow-lg border border-blue-200 
-                                          text-center p-4 z-10">
-                                <h3 class="text-white font-bold text-sm md:text-base mb-1 drop-shadow-md">
+                                          text-center p-2 sm:p-4 z-10">
+                                <h3 class="text-white font-bold text-xs sm:text-sm md:text-base mb-0.5 sm:mb-1 drop-shadow-md">
                                   Por lo que te<br/>Pagarían
                                 </h3>
-                                <div class="w-full h-[85%] px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
+                                <div class="w-full h-[90%] sm:h-[85%] px-1 sm:px-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-200">
                                   <p class="text-white text-xs md:text-sm font-medium">
                                     {state.ikigaiResponses.payment || "Sin datos"}
                                   </p>
@@ -963,7 +963,7 @@ export default component$(() => {
                             </div>
                           </div>
                           
-                          <div class="text-center py-2 bg-teal-800 text-white font-bold mt-2 rounded-b-lg text-xs shadow-sm">
+                          <div class="text-center py-1 sm:py-2 bg-teal-800 text-white font-bold mt-1 sm:mt-2 rounded-b-lg text-xs shadow-sm">
                             TUIKIGAI - "La frase que representa tu propósito de vida"
                           </div>
                           
@@ -1070,22 +1070,53 @@ export default component$(() => {
                               animation: fadeIn 0.5s ease forwards;
                             }
                             
-                            /* Responsive adjustments */
+                            /* Mobile optimizations - revised based on screenshot */
                             @media (max-width: 640px) {
                               .ikigai-circle {
-                                width: 60%;
-                                height: 60%;
+                                width: 52%;
+                                height: 52%;
                               }
                               
                               .ikigai-circle h3 {
-                                font-size: 0.8rem;
-                                padding-bottom: 0.2rem;
-                                margin-bottom: 0.2rem;
+                                font-size: 0.75rem;
+                                padding-bottom: 0.15rem;
+                                margin-bottom: 0.15rem;
                                 line-height: 1;
                               }
                               
                               .ikigai-circle p {
                                 font-size: 0.7rem;
+                                line-height: 1.1;
+                              }
+                              
+                              /* Adjust vertical positioning to reduce overlap */
+                              .ikigai-love {
+                                top: -2%;
+                              }
+                              
+                              .ikigai-payment {
+                                bottom: -2%;
+                              }
+                              
+                              /* Shrink padding to maximize available space */
+                              .ikigai-circle {
+                                padding: 2px !important;
+                              }
+                            }
+                            
+                            /* Extra small devices */
+                            @media (max-width: 375px) {
+                              .ikigai-circle {
+                                width: 50%;
+                                height: 50%;
+                              }
+                              
+                              .ikigai-love {
+                                top: -4%;
+                              }
+                              
+                              .ikigai-payment {
+                                bottom: -4%;
                               }
                             }
                           `} />
