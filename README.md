@@ -1,211 +1,406 @@
-# TUIKIGAI - Descubre tu propósito
+# TUIKIGAI COLOMBIA - Manual Técnico y de Usuario
 
-TUIKIGAI es una aplicación web interactiva que ayuda a los usuarios a descubrir su propósito de vida a través del concepto japonés del Ikigai. La plataforma permite a los usuarios responder a cuatro preguntas clave y visualizar la relación entre sus respuestas mediante un diagrama interactivo que evoluciona en tiempo real.
+**Versión:** 1.0  
+**Cliente:** Capital Martech SAS  
+**Desarrollador:** NeuronaX SAS  
+**Fecha de entrega:** 16/05/2025
 
-## Características principales
+---
 
-- **Ikigai Playground**: Permite a los usuarios responder las cuatro preguntas fundamentales del Ikigai:
-  - Lo que amas
-  - En lo que eres bueno
-  - Lo que el mundo necesita
-  - Por lo que te pagarían
+## Índice
 
-- **Diagrama interactivo en tiempo real**: Visualización en D3.js que muestra la relación entre las respuestas.
+1. [Introducción](#introducción)
+2. [Visión General y Propósito](#visión-general-y-propósito)
+3. [Arquitectura y Tecnologías](#arquitectura-y-tecnologías)
+4. [Estructura del Proyecto](#estructura-del-proyecto)
+5. [Flujos de Usuario y Funcionalidades](#flujos-de-usuario-y-funcionalidades)
+6. [Instalación y Configuración](#instalación-y-configuración)
+7. [Desarrollo, Mantenimiento y Mejora Continua](#desarrollo-mantenimiento-y-mejora-continua)
+8. [Integraciones y Servicios](#integraciones-y-servicios)
+9. [Seguridad, Buenas Prácticas y Auditoría](#seguridad-buenas-prácticas-y-auditoría)
+10. [Preparación para Integración de Inteligencia Artificial](#preparación-para-integración-de-inteligencia-artificial)
+11. [Preguntas Frecuentes](#preguntas-frecuentes)
+12. [Soporte y Contacto](#soporte-y-contacto)
+13. [Cierre y Recomendaciones](#cierre-y-recomendaciones)
+14. [Autoría y Firma](#autoría-y-firma)
 
-- **Índice de Convergencia**: Medidor que muestra el porcentaje de coincidencias cruzadas entre las respuestas.
+---
 
-- **Flujos comerciales**:
-  - Canjear código de regalo (sin pago)
-  - Regalar experiencia (109.000 COP)
-  - Comprar para sí mismo (99.000 COP)
+## 1. Introducción
 
-- **Integración con Siigo Checkout**: Para procesar pagos y generar facturas electrónicas DIAN.
+Bienvenido a la documentación oficial de **TUIKIGAI Colombia**, una plataforma web interactiva que permite a los usuarios descubrir su propósito de vida a través del método japonés Ikigai. Este documento es una guía integral para usuarios, administradores y desarrolladores, cubriendo desde el uso básico hasta la evolución técnica del sistema.
 
-## Tecnologías utilizadas
+---
 
-- **Frontend**: Qwik, TailwindCSS, D3.js, Framer Motion
-- **Backend**: Google Apps Script (GAS)
-- **Base de datos**: Google Sheets
-- **Facturación**: Siigo Checkout
-- **Alojamiento**: Cloudflare Pages
-- **Seguridad**: Cloudflare Turnstile
-- **Análisis**: Cloudflare Web Analytics
+## 2. Visión General y Propósito
 
-## Estructura del proyecto
+TUIKIGAI es una SPA (Single Page Application) moderna, robusta y escalable, que permite a los usuarios:
+
+- Explorar su Ikigai mediante preguntas clave y visualizaciones interactivas.
+- Personalizar su experiencia y adquirir productos digitales relacionados.
+- Realizar compras y regalos de experiencias de Ikigai, con integración de pagos segura.
+- Disfrutar de una experiencia fluida, responsiva y visualmente atractiva.
+
+**Propósito:**
+- Brindar una herramienta digital confiable y atractiva para el autodescubrimiento y la reflexión personal.
+- Facilitar la adquisición y regalo de experiencias personalizadas.
+- Servir como base tecnológica sólida para futuras evoluciones, incluyendo inteligencia artificial y nuevas integraciones.
+
+El dominio, hosting y distribución de la plataforma son provistos por **NeuronaX SAS**, garantizando alta disponibilidad y soporte profesional. La base de datos Firestore y la gestión de pagos están bajo control del equipo de TUIKIGAI, asegurando la privacidad y seguridad de los datos.
+
+---
+
+## 3. Arquitectura y Tecnologías
+
+### 3.1. Diagrama de Arquitectura
+
+```
+Usuario
+   │
+   ▼
+Frontend (Qwik + TailwindCSS + D3.js)
+   │
+   ▼
+Servicios (APIs internas, Firestore, MercadoPago)
+   │
+   ▼
+Backend (Google Apps Script - Mock para futuras integraciones)
+   │
+   ▼
+Base de datos (Firestore)
+```
+
+### 3.2. Tecnologías Principales
+
+| Capa         | Tecnología                | Descripción                                                                 |
+|--------------|--------------------------|-----------------------------------------------------------------------------|
+| Frontend     | Qwik, TailwindCSS, D3.js | SPA reactiva, estilos modernos, visualización interactiva                   |
+| Backend      | Google Apps Script (Mock) | Listo para futuras integraciones con Google Sheets y automatización         |
+| Base de datos| Firestore                | Almacenamiento seguro y eficiente de datos de usuario y transacciones       |
+| Pagos        | MercadoPago               | Integración robusta para pagos y regalos                                    |
+| Seguridad    | NeuronaX Turnstile        | Protección anti-bots                                                        |
+| Analytics    | NeuronaX Web Analytics    | Seguimiento de conversiones y comportamiento sin cookies                    |
+
+**Nota:** El stack está cuidadosamente seleccionado para maximizar la eficiencia, seguridad y escalabilidad, permitiendo futuras integraciones y mejoras sin comprometer la estabilidad actual.
+
+---
+
+## 4. Estructura del Proyecto
 
 ```
 /
-├── src/                       # Código fuente
-│   ├── components/            # Componentes de la aplicación
-│   │   ├── sections/          # Secciones principales
-│   │   └── ui/               # Componentes de UI reutilizables
-│   ├── styles/                # Estilos CSS
-│   └── main.jsx               # Punto de entrada
-├── backend/                   # Script de backend para Google Apps Script
-├── public/                    # Archivos estáticos
-└── index.html                 # Plantilla HTML principal
+├── src/
+│   ├── components/        # Componentes UI y secciones principales
+│   │   ├── sections/      # Secciones principales (Ikigai, Footer, Flujos)
+│   │   ├── ui/            # Componentes de UI reutilizables
+│   │   └── router-head/   # Configuración del head HTML
+│   ├── routes/            # Rutas y páginas de la aplicación
+│   │   ├── index.tsx      # Página principal
+│   │   ├── payment/       # Rutas de pagos (success, pending, failure)
+│   │   ├── privacidad/    # Política de privacidad
+│   │   └── terminos/      # Términos y condiciones
+│   ├── services/          # Lógica de negocio e integraciones
+│   ├── utils/             # Funciones auxiliares y helpers
+│   ├── types/             # Definiciones de tipos TypeScript
+│   ├── styles/            # Estilos globales (TailwindCSS)
+│   └── firebase.ts        # Configuración de Firestore
+├── public/                # Recursos estáticos (imágenes, documentos)
+├── backend/               # Scripts para futuras integraciones (Google Apps Script)
+├── utils/                 # Mock de integración con Google Sheets
+├── dist/                  # Build de producción
+├── scripts/               # Scripts de utilidad
+├── package.json           # Dependencias y scripts de npm
+└── README.md              # Documentación principal
 ```
 
-## Requisitos previos
+### 4.1. Descripción de Carpetas y Archivos Clave
 
-- Node.js 16.x o superior
-- Cuenta de Cloudflare (para el despliegue)
-- Cuenta de Google (para el backend con Apps Script y Sheets)
-- Cuenta de Siigo (para facturación electrónica)
+- **src/components/sections/UnifiedIkigai.tsx**: Núcleo de la experiencia Ikigai, lógica de visualización y manipulación de respuestas.
+- **src/components/sections/PurchaseFlow.tsx**: Flujo de compra y regalo, integración con MercadoPago.
+- **src/services/MercadoPagoService.ts**: Lógica de integración con la pasarela de pagos.
+- **src/services/FirestoreService.ts**: Abstracción para operaciones con Firestore.
+- **src/services/GoogleSheetsService.ts**: Listo para futuras integraciones reales con Google Sheets.
+- **src/services/SiigoPaymentService.ts**: Mock para facturación electrónica DIAN.
+- **utils/googleSheetUtils.js**: Mock de integración con Google Sheets.
+- **backend/tuikigai-backend.js**: Script de Google Apps Script para futuras integraciones.
 
-## Instalación
+**Recomendación:** Mantener la estructura modular y la documentación interna de cada módulo para facilitar la evolución y el mantenimiento.
 
-1. Clona este repositorio:
-   ```bash
-   git clone https://github.com/username/tuikigai.git
-   cd tuikigai
-   ```
+---
 
-2. Instala las dependencias:
-   ```bash
-   npm install
-   ```
+## 5. Flujos de Usuario y Funcionalidades
 
-3. Crea un archivo `.env` con las siguientes variables:
-   ```
-   VITE_BACKEND_URL=https://script.google.com/macros/s/tu-script-id/exec
-   VITE_TURNSTILE_SITEKEY=tu-sitekey-de-cloudflare-turnstile
-   ```
+### 5.1. Ikigai Playground
 
-## Ejecución en desarrollo
+- El usuario responde las 4 preguntas clave del Ikigai.
+- El diagrama interactivo se actualiza en tiempo real usando D3.js.
+- Se pueden personalizar colores y guardar la experiencia.
 
-Para iniciar el servidor de desarrollo:
+### 5.2. Proceso de Compra y Regalo
+
+- Opción de comprar la experiencia para sí mismo o regalarla.
+- Integración con MercadoPago para pagos seguros.
+- Generación y canje de códigos de regalo.
+- Confirmación y seguimiento de transacciones.
+
+### 5.3. Canje de Código de Regalo
+
+- El destinatario ingresa el código recibido.
+- Validación automática contra Firestore.
+- Acceso a la experiencia personalizada.
+
+### 5.4. Administración y Seguridad
+
+- Protección anti-bots con NeuronaX Turnstile.
+- Análisis de tráfico y conversiones con NeuronaX Web Analytics.
+- Gestión segura de datos y cumplimiento de normativas.
+
+**Diagrama de Flujo Simplificado:**
+
+```
+[Inicio] → [Responde Ikigai] → [Visualiza Diagrama] → [Compra/Regala] → [Pago] → [Código de Regalo] → [Canjea] → [Fin]
+```
+
+---
+
+## 6. Instalación y Configuración
+
+### 6.1. Requisitos Previos
+
+- Node.js 18.x o superior
+- npm 8.x o superior
+- Cuenta de Google y Firebase (para futuras integraciones)
+- Cuenta de MercadoPago (para pagos)
+- Cuenta de Siigo (opcional, para facturación electrónica en desarrollos futuros)
+
+### 6.2. Instalación
+
+```bash
+git clone https://github.com/NeuronaX-SAS/tuikigaicolombiacom.git
+cd tuikigaicolombiacom
+npm install
+```
+
+### 6.3. Configuración de Variables de Entorno
+
+Crea un archivo `.env` en la raíz del proyecto con:
+
+```
+VITE_BACKEND_URL=https://script.google.com/macros/s/tu-script-id/exec
+VITE_TURNSTILE_SITEKEY=tu-sitekey-de-neuronax-turnstile
+VITE_MP_PUBLIC_KEY=tu-clave-publica-de-mercadopago
+```
+
+**Importante:** Nunca expongas tus claves o credenciales en el repositorio. Usa siempre variables de entorno.
+
+---
+
+## 7. Desarrollo, Mantenimiento y Mejora Continua
+
+### 7.1. Desarrollo Local
 
 ```bash
 npm run dev
 ```
+Accede a `http://localhost:3000`.
 
-La aplicación estará disponible en `http://localhost:5173`.
+### 7.2. Simulación de Producción
 
-## Configuración del backend
-
-### Google Sheets
-
-1. Crea una nueva hoja de cálculo de Google Sheets.
-2. Crea tres hojas con los siguientes nombres:
-   - `Submissions` (para registrar todas las entradas)
-   - `GiftCodes` (para gestionar códigos de regalo)
-   - `Transactions` (para seguimiento de transacciones)
-
-### Google Apps Script
-
-1. En la hoja de cálculo, ve a Extensiones > Apps Script.
-2. Copia y pega el contenido del archivo `backend/tuikigai-backend.js`.
-3. Actualiza las constantes `SPREADSHEET_ID` y `SIIGO_API` con tus credenciales.
-4. Despliega el script como aplicación web:
-   - Implementar > Nueva implementación.
-   - Selecciona "Aplicación web".
-   - Ejecutar como: "Yo" (tu cuenta).
-   - Quién tiene acceso: "Cualquier persona".
-   - Haz clic en "Implementar".
-   - Copia la URL de la aplicación web y actualiza `VITE_BACKEND_URL` en tu archivo `.env`.
-
-### Siigo Checkout
-
-1. Regístrate en [Siigo](https://siigo.com).
-2. Crea los productos para la experiencia personal y de regalo.
-3. Obtén tus credenciales de API y configura las URLs de redirección.
-4. Actualiza las constantes `SIIGO_API` y `SIIGO_PRODUCT_IDS` en el script de backend.
-
-## Despliegue en Cloudflare Pages
-
-1. Prepara la aplicación para producción:
-   ```bash
-   npm run build
-   ```
-
-2. Conecta tu repositorio a Cloudflare Pages:
-   - Inicia sesión en [Cloudflare Pages](https://pages.cloudflare.com/).
-   - Haz clic en "Crear un proyecto".
-   - Conecta tu repositorio de GitHub.
-   - Configura el proyecto con los siguientes ajustes:
-     - Comando de compilación: `npm run build`
-     - Directorio de salida: `dist`
-     - Variables de entorno: Añade las mismas variables que en tu archivo `.env`.
-
-3. Configura un dominio personalizado si lo deseas.
-
-## Configuración de Cloudflare Turnstile
-
-1. Crea una clave de sitio en [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/).
-2. Actualiza `VITE_TURNSTILE_SITEKEY` en tu archivo `.env` con la clave obtenida.
-
-## Contribuciones
-
-Las contribuciones son bienvenidas. Por favor, abre un issue para discutir los cambios propuestos.
-
-## Licencia
-
-[MIT](LICENSE)
-
-## Autor
-
-NeuronaX S.A.S.
-
-## Contacto
-
-Para soporte o consultas: hola@tuikigai.co
-
-## Cloudflare Pages
-
-Cloudflare's [wrangler](https://github.com/cloudflare/wrangler) CLI can be used to preview a production build locally. To start a local server, run:
-
-```
+```bash
 npm run serve
 ```
+Simula el entorno de producción localmente.
 
-Then visit [http://localhost:8787/](http://localhost:8787/)
+### 7.3. Construcción para Producción
 
-### Deployments
-
-[Cloudflare Pages](https://pages.cloudflare.com/) are deployable through their [Git provider integrations](https://developers.cloudflare.com/pages/platform/git-integration/).
-
-If you don't already have an account, then [create a Cloudflare account here](https://dash.cloudflare.com/sign-up/pages). Next go to your dashboard and follow the [Cloudflare Pages deployment guide](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/).
-
-Within the projects "Settings" for "Build and deployments", the "Build command" should be `npm run build`, and the "Build output directory" should be set to `dist`.
-
-### Function Invocation Routes
-
-Cloudflare Page's [function-invocation-routes config](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes) can be used to include, or exclude, certain paths to be used by the worker functions. Having a `_routes.json` file gives developers more granular control over when your Function is invoked.
-This is useful to determine if a page response should be Server-Side Rendered (SSR) or if the response should use a static-site generated (SSG) `index.html` file.
-
-By default, the Cloudflare pages adaptor _does not_ include a `public/_routes.json` config, but rather it is auto-generated from the build by the Cloudflare adaptor. An example of an auto-generate `dist/_routes.json` would be:
-
+```bash
+npm run build
 ```
-{
-  "include": [
-    "/*"
-  ],
-  "exclude": [
-    "/_headers",
-    "/_redirects",
-    "/build/*",
-    "/favicon.ico",
-    "/manifest.json",
-    "/service-worker.js",
-    "/about"
-  ],
-  "version": 1
-}
+El resultado estará en el directorio `dist/`.
+
+### 7.4. Despliegue
+
+El despliegue y la distribución están gestionados por NeuronaX SAS. Para actualizaciones o despliegues, contactar al equipo de soporte.
+
+### 7.5. Actualización de Dependencias
+
+```bash
+npm outdated
+npm update
+```
+Para actualizaciones importantes:
+```bash
+npm install package@latest
 ```
 
-In the above example, it's saying _all_ pages should be SSR'd. However, the root static files such as `/favicon.ico` and any static assets in `/build/*` should be excluded from the Functions, and instead treated as a static file.
+### 7.6. Diagnóstico de Problemas Comunes
 
-In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adaptor will not auto-generate the routes config and instead use the committed one within the `public` directory.
+- **Problemas de integración con Google Sheets**: Verifica credenciales, estructura y logs en Apps Script.
+- **Problemas con pagos**: Revisa credenciales de MercadoPago y URLs de redirección.
+- **Problemas de rendimiento**: Optimiza imágenes, usa Lighthouse y revisa la consola.
 
-## ⚠️ Google Sheets Integration (Mocked)
+### 7.7. Auditoría de Seguridad
 
-> **Important:**
->
-> The current Google Sheets integration is a mock implementation. No real data is sent to or stored in Google Sheets in production. All related functions (such as saving Ikigai responses, promo codes, or purchases) only log the data and return success, but do not persist anything.
->
-> This approach is safe for production and prevents accidental data loss or exposure. If you want to enable real Google Sheets integration in the future, you must:
->
-> 1. Replace `utils/googleSheetUtils.js` with a real implementation that uses the Google Sheets API and your credentials.
-> 2. Ensure your credentials are stored securely (never hardcoded or committed to the repository).
-> 3. Test thoroughly before enabling in production.
+- Mantén dependencias actualizadas.
+- Verifica vulnerabilidades con `npm audit`.
+- Asegura que las claves API y tokens estén seguros y no expuestos.
+
+### 7.8. Mejora Continua
+
+- Documenta cada cambio relevante en el repositorio.
+- Realiza revisiones de código periódicas.
+- Mantén una cultura de pruebas y validación antes de cada despliegue.
+- Considera la retroalimentación de usuarios para priorizar nuevas funcionalidades.
+
+---
+
+## 8. Integraciones y Servicios
+
+### 8.1. Firestore
+
+- Almacena respuestas de Ikigai, datos de pago y códigos promocionales.
+- Gestión y acceso controlado por el equipo de TUIKIGAI.
+
+### 8.2. MercadoPago
+
+- Procesamiento de pagos y generación de códigos de regalo.
+- Configuración de credenciales y URLs de redirección en el archivo `.env`.
+
+### 8.3. Google Apps Script y Google Sheets
+
+- Actualmente en modo mock para pruebas y desarrollo.
+- Listo para futuras integraciones reales.
+- Para activar la integración real, reemplazar `utils/googleSheetUtils.js` por una implementación real y asegurar el almacenamiento seguro de credenciales.
+
+### 8.4. Siigo
+
+- Integración mock para facturación electrónica DIAN.
+- Listo para desarrollos futuros según requerimientos de Capital Martech SAS.
+
+### 8.5. Seguridad y Analytics
+
+- NeuronaX Turnstile y Web Analytics integrados para protección y análisis avanzado.
+
+**Nota:** Las integraciones están diseñadas para ser desacopladas y fácilmente reemplazables o ampliables según las necesidades futuras del negocio.
+
+---
+
+## 9. Seguridad, Buenas Prácticas y Auditoría
+
+- Mantén las dependencias actualizadas (`npm outdated`, `npm update`).
+- Realiza auditorías de seguridad periódicas (`npm audit`).
+- Nunca expongas claves o credenciales en el repositorio.
+- Usa variables de entorno para información sensible.
+- Realiza pruebas exhaustivas antes de activar nuevas integraciones.
+- Documenta cualquier cambio relevante en la arquitectura o dependencias.
+- Contacta a NeuronaX SAS para reportes de analytics o soporte avanzado.
+
+**Recomendación:** Implementa revisiones de seguridad y pruebas automatizadas en cada ciclo de desarrollo.
+
+---
+
+## 10. Preparación para Integración de Inteligencia Artificial
+
+La arquitectura de TUIKIGAI está preparada para evolucionar hacia una experiencia de Ikigai dinámico potenciada por inteligencia artificial (IA). A continuación, se detallan los módulos y puntos de extensión recomendados para futuras integraciones de IA:
+
+### 10.1. Puntos de Integración Sugeridos
+
+- **src/components/sections/UnifiedIkigai.tsx**
+  - Aquí se gestiona la lógica de visualización y procesamiento de las respuestas del usuario. Para IA, se puede:
+    - Incorporar un servicio que analice las respuestas y sugiera insights personalizados.
+    - Integrar un modelo de lenguaje (API externa o local) para generar recomendaciones o reflexiones automáticas.
+    - Añadir un botón o trigger para "Ikigai Dinámico" que consulte un endpoint de IA.
+
+- **src/services/api.ts**
+  - Este archivo puede extenderse para incluir llamadas a servicios de IA (por ejemplo, OpenAI, Azure AI, Google AI, etc.).
+  - Ejemplo de función a agregar:
+    ```ts
+    export async function getIkigaiAIInsights(respuestas) {
+      // Llamada a API de IA
+      // return await axios.post('https://api.tu-ia.com/ikigai', respuestas);
+    }
+    ```
+
+- **src/routes/api/**
+  - Puedes crear un endpoint local (por ejemplo, `src/routes/api/ikigai-ai.ts`) que reciba las respuestas del usuario, las procese y devuelva recomendaciones generadas por IA.
+
+- **src/components/ui/**
+  - Aquí puedes crear componentes reutilizables para mostrar resultados, insights o visualizaciones generadas por IA.
+
+### 10.2. Recomendaciones para la Integración de IA
+
+- Mantener la separación de responsabilidades: la lógica de IA debe estar desacoplada de la UI.
+- Usar servicios y hooks personalizados para consumir la IA.
+- Documentar exhaustivamente cualquier integración de IA, incluyendo dependencias, endpoints y ejemplos de uso.
+- Realizar pruebas exhaustivas y validaciones de seguridad, especialmente si se usan APIs externas.
+- Considerar la privacidad y el consentimiento del usuario para el procesamiento de datos.
+
+### 10.3. Ejemplo de Flujo para Ikigai Dinámico con IA
+
+1. El usuario responde las preguntas del Ikigai.
+2. Se envían las respuestas a un endpoint de IA (local o externo).
+3. La IA procesa y devuelve insights personalizados.
+4. Se muestran los resultados en un nuevo componente de la UI.
+
+**Ventaja Competitiva:** Esta preparación permite que el proyecto evolucione hacia experiencias personalizadas y escalables, alineadas con tendencias globales de digitalización y bienestar.
+
+---
+
+## 11. Preguntas Frecuentes
+
+**¿Cómo puedo modificar la experiencia de usuario o el diseño?**  
+Edita los componentes en `src/components/sections` y los estilos en `src/styles/main.css` o usando TailwindCSS.
+
+**¿Cómo agregar nuevas funcionalidades?**  
+Crea nuevos servicios en `src/services` y componentes en `src/components`. Sigue la estructura modular y usa TypeScript para mantener la robustez.
+
+**¿Cómo activar la integración real con Google Sheets o Siigo?**  
+Consulta la sección 8.3 y 8.4. Contacta a NeuronaX SAS para soporte y acompañamiento en la integración.
+
+**¿Cómo escalar o migrar la base de datos?**  
+Firestore es escalable y gestionado por TUIKIGAI. Para migraciones, contacta al equipo técnico.
+
+**¿Cómo integrar inteligencia artificial para el Ikigai dinámico?**  
+Consulta la sección 10 para recomendaciones y puntos de extensión.
+
+**¿Qué debo hacer si encuentro un error inesperado?**  
+Revisa la consola del navegador, los logs de la base de datos y los endpoints de la API. Si el problema persiste, contacta al soporte técnico.
+
+**¿Cómo puedo contribuir a la mejora del proyecto?**  
+Sugiere mejoras, reporta bugs o solicita nuevas funcionalidades a través del canal de soporte.
+
+---
+
+## 12. Soporte y Contacto
+
+Para soporte técnico, mantenimiento o evolución del proyecto:
+
+- **Email:** neuronax.sas@gmail.com & jaop.neuronax@gmail.com
+- **Teléfono:** +57 320 3478322 (NeuronaX SAS)
+- **Repositorio:** [https://github.com/NeuronaX-SAS/tuikigaicolombiacom](https://github.com/NeuronaX-SAS/tuikigaicolombiacom)
+
+---
+
+## 13. Cierre y Recomendaciones
+
+TUIKIGAI Colombia es una plataforma robusta, segura y lista para evolucionar según las necesidades de Capital Martech SAS. Se recomienda mantener la relación con NeuronaX SAS para futuras mejoras, integraciones y soporte, asegurando la continuidad y calidad del proyecto.
+
+**Recomendaciones Finales:**
+- Mantén la documentación actualizada.
+- Prioriza la seguridad y la privacidad de los datos.
+- Evalúa periódicamente nuevas tendencias tecnológicas para mantener la plataforma competitiva.
+- Considera la integración de IA y nuevas experiencias digitales como parte de la evolución natural del producto.
+
+---
+
+## 14. Autoría y Firma
+
+**Departamento de Tecnología**  
+**NeuronaX SAS**  
+*Desarrollado para Capital Martech SAS*  
+*Versión 1.0 - 16/05/2025*
+
+---
+
+¿Deseas personalizar o evolucionar la plataforma?  
+**¡Cuenta con el respaldo y experiencia de NeuronaX SAS, desde 1983 le aportamos a Colombia!**
